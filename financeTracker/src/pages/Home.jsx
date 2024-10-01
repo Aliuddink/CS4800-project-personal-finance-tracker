@@ -1,20 +1,18 @@
 import React from 'react';
-import {BrowserRouter, Routes, Route} from 'react'
-function App() {
+function Home() {
   return (
     <div>
-
       <header>
         <div className="logo-container">
-          <img src="/logoIcon.png" alt="Company Logo" className="logo" />
+          <img src="./logoIcon.png" alt="Company Logo" className="logo" />
           <span className="logo-text">Finance Company</span>
         </div>
         <nav>
           <ul>
-            <li><a href="#">Home</a></li>
+            <li><a href="/home">Home</a></li>
             <li><a href="#">Summary</a></li>
             <li><a href="#">BudgetBot</a></li>
-            <li><a href="#">Login</a></li>
+            <li><a href="/login">Login</a></li>
           </ul>
         </nav>
       </header>
@@ -51,4 +49,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
