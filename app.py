@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS  # Import CORS
+from db_connector import test_db_connection 
 import db_connector
 import send_email
 
@@ -66,4 +67,5 @@ def reset_password():
     return jsonify({'message': 'Password updated successfully'}), 200
 
 if __name__ == '__main__':
+    test_db_connection()
     app.run(debug=True)
