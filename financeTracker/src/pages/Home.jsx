@@ -2,22 +2,25 @@ import React from 'react';
 function Home() {
   return (
     <div>
-      <header>
-        <div className="logo-container">
-          <img src="./logoIcon.png" alt="Company Logo" className="logo" />
-          <span className="logo-text">Finance Company</span>
+      <header className="fixed top-0 left-0 w-full h-20 bg-gray-800 flex items-center justify-between p-2 text-white z-50">
+        {/* Logo Container */}
+        <div className="flex items-center">
+          <img src="./logoIcon.png" alt="Company Logo" className="h-8 mr-2" />
+          <span className="text-lg font-bold">Finance Company</span>
         </div>
+
+        {/* Navigation */}
         <nav>
-          <ul>
-            <li><a href="/home">Home</a></li>
-            <li><a href="#">Summary</a></li>
-            <li><a href="#">BudgetBot</a></li>
-            <li><a href="/login">Login</a></li>
+          <ul className="flex space-x-4">
+            <li><a href="/home" className="hover:text-green-300">Home</a></li>
+            <li><a href="#" className="hover:text-green-300">Summary</a></li>
+            <li><a href="#" className="hover:text-green-300">BudgetBot</a></li>
+            <li><a href="/login" className="hover:text-green-300">Login</a></li>
           </ul>
         </nav>
       </header>
 
-      <section className="motto">
+      {/* <section className="motto">
         <h1>Manage Your Finance,<br/>Expand Your Savings</h1>
         <p>Track your savings and expenses effortlessly with our finance tool.<br/>Visualize your financial health through interactive charts, helping you stay on top of your budget</p>
         <button className="reg-button">Register Now →</button> 
@@ -43,7 +46,7 @@ function Home() {
 
       <footer>
         <p>&copy; 2024 Finance Company. All Rights Reserved.</p>
-      </footer>
+      </footer> */}
     </div>
   
   );
