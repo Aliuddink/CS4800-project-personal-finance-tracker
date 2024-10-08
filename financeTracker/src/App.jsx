@@ -6,7 +6,6 @@ import Login from './pages/Login';
 import Signup from './pages/Signup'
 import PersonalInfo from './pages/PersonalInfo';
 import Summary from './pages/Summary';
-
 function App() {
   return (
     <div>
