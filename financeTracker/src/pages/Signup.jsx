@@ -94,8 +94,6 @@ function Signup() {
               </span>
             </div>
           </div>
-
-
         </div>
       </div>
     </>
