@@ -26,7 +26,7 @@ function PersonalInfo() {
                 alt="Summary Icon"
                 className="h-[30px] w-[30px] object-center"
               />
-              <a href="#" className="text-white">Summary</a>
+              <a href="/summary" className="text-white">Summary</a>
             </li>
             <li className="flex gap-2 items-center">
               <img
@@ -42,7 +42,7 @@ function PersonalInfo() {
                 alt="Setting Icon"
                 className="h-[30px] w-[30px] object-center"
               />
-              <a href="#" className="text-white">Setting</a>
+              <a href="/personal-Info" className="text-white">Setting</a>
             </li>
           </ul>
         </nav>

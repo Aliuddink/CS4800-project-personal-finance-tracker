@@ -7,7 +7,7 @@ const Home = () => {
       {/* Navbar */}
       <nav className="bg-black shadow-md py-4 px-6 flex justify-between items-center">
 
-        {/* Left Logo and Company Name */}
+        {/* Logo and Company Name */}
         <div className="flex items-center space-x-3">
           <img src="/logoIcon.png" alt="Logo" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-bold">Finance Company</span>
@@ -20,7 +20,6 @@ const Home = () => {
           <li><Link to="/budgetbot" className="hover:text-[#1FC978]">BudgetBot</Link></li>
           <li><Link to="/login" className="hover:text-[#1FC978]">Login</Link></li>
         </ul>
-
       </nav>
 
       {/* Header */}
@@ -43,9 +42,11 @@ const Home = () => {
         </p>
 
         {/* Register Now Button */}
-        <button className="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
-          Register Now →
-        </button>
+        <Link to="/Signup">
+          <button className="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+            Register Now →
+          </button>
+        </Link>
 
         <img src="/pigMoneyIcon.png" alt="Finance Image" className="mt-2 ml-auto w-32 h-32 md:w-44 md:h-44 object-contain rounded-lg shadow-md" />
       </header>
