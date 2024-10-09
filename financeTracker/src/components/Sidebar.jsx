@@ -44,7 +44,7 @@ export default function Sidebar() {
               alt="Setting Icon"
               className="h-[35px] w-[35px] object-center"
             />
-            <a href="#">Setting</a>
+            <a href="/personal-Info">Setting</a>
           </li>
         </ul>
       </nav>
