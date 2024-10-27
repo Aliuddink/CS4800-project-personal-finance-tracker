@@ -36,3 +36,11 @@ CREATE TABLE goals (
     description VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE savings (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    goal_id INT REFERENCES goals(id),
+    amount DECIMAL(10, 2) NOT NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
