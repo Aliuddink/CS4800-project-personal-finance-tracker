@@ -14,7 +14,7 @@ function Signup() {
           <span className="ml-4 text-lg font-semibold text-white">Finance Name</span>
         </div>
       </header>
-      <div className="flex justify-center items-center h-screen w-screen">
+      <div className="flex justify-center items-center h-screen w-screen mt-12">
         <div className="relative">
           {/* Circle behind the box */}
           <div
