@@ -37,4 +37,19 @@ export const resetPassword = async (resetData) => {
     } catch (error) {
         throw error.response.data; // Handle error response
     }
+    
+export const filterExpenses = async (userId, filters) => {
+    try {
+        const response = await axios.get(`${API_URL}/api/expenses/filter`, {
+            params: {
+                user_id: userId,
+                sort_by: filters.sortBy || 'date',  // Default to 'date' if not provided
+                order: filters.order || 'desc'      // Default to 'desc' if not provided
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching filtered expenses' };
+    }
+};
 };
