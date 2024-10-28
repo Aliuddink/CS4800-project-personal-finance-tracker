@@ -183,6 +183,48 @@ def add_category():
 
     return jsonify({"message": "Category added successfully", "category_id": category_id}), 201
 
+@app.route('/api/expenses/filter', methods=['GET'])
+def filter_expenses():
+    user_id = request.args.get('user_id')
+    sort_by = request.args.get('sort_by', 'date')  # Default sorting by date
+    order = request.args.get('order', 'desc')  # Default order descending
+
+    # Map sort_by options to actual database columns
+    sort_options = {
+        'amount': 'amount',
+        'category': 'category_id',
+        'date': 'date'
+    }
+    sort_column = sort_options.get(sort_by, 'date')  # Fallback to 'date' if sort_by is invalid
+
+    # Ensure the order is either 'asc' or 'desc'
+    order = 'asc' if order == 'asc' else 'desc'
+
+    # Build the SQL query
+    query = f"SELECT * FROM expenses WHERE user_id = %s ORDER BY {sort_column} {order}"
+    
+    # Execute the query
+    conn = db_connector.get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(query, (user_id,))
+    expenses = cursor.fetchall()
+    conn.close()
+
+    # Format the response
+    if not expenses:
+        return jsonify({'message': 'No expenses found for this user'}), 404
+
+    return jsonify([
+        {
+            "id": row[0],
+            "user_id": row[1],
+            "category_id": row[2],
+            "amount": row[3],
+            "description": row[4],
+            "date": row[5]
+        } for row in expenses
+    ])
+
 if __name__ == '__main__':
     test_db_connection()
     app.run(debug=True)
