@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup'
 import PersonalInfo from './pages/PersonalInfo';
 import Summary from './pages/Summary';
+import BudgetBot from './pages/Budgetbot'
 function App() {
   return (
     <div>
@@ -17,6 +18,7 @@ function App() {
           <Route path = '/signup' element = {<Signup/>}/>
           <Route path = '/personal-info' element = {<PersonalInfo/>}/>
           <Route path = '/summary' element = {<Summary/>}/>
+          <Route path = '/budgetbot' element = {<BudgetBot/>}/>
         </Routes>
       </BrowserRouter>
     </div>
