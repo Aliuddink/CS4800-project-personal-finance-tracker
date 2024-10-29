@@ -14,7 +14,7 @@ export default function Summary() {
       {/* Summary content */}
       <div className="flex-1 ml-48 w-full h-full flex text-black overflow-y-scroll">
         {/* Summary Card Container */}
-        <div className="pt-10 flex flex-wrap w-full h-full gap-10 justify-evenly">
+        <div className="pt-10 flex flex-wrap w-full h-full justify-evenly md:gap-10">
           <ExpenseCard />
           <SavingCard />
           <ComparisonCard />
