@@ -1,8 +1,13 @@
 import React from "react";
 import CardButton from "../components/CardButton";
+import {TableHeader, TableRow, FilterDropdown} from "./TableComponents";
 
 export default function BreakdownCard() {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
+  const [items, setItems] = React.useState([
+    { title: "Chipotle", tagName: "food", savings: "$724.47", date: "09/19/2024" },
+    { title: "Housing", tagName: "rent", savings: "$734.56", date: "09/12/2024" }
+  ]);
 
   const handleFilterClick = () => {
     setIsFilterOpen(!isFilterOpen);
@@ -21,14 +26,20 @@ export default function BreakdownCard() {
   const handleSortLogic = (type) => {
     if (type === 'newest') {
       console.log('Sorting by newest');
-      // Add sorting logic here
+      setItems(prevItems => 
+        [...prevItems].sort((a, b) => new Date(b.date) - new Date(a.date))
+      );
     } else if (type === 'oldest') {
       console.log('Sorting by oldest');
-      // Add sorting logic here
+      setItems(prevItems => 
+        [...prevItems].sort((a, b) => new Date(a.date) - new Date(b.date))
+      );
     }
     else if (type === 'alphabetically') {
       console.log('Sorting alphabetically');
-      // Add sorting logic here
+      setItems(prevItems => 
+        [...prevItems].sort((a, b) => a.title.localeCompare(b.title))
+      );
     }
 
     // Close filter dropdown
@@ -38,41 +49,49 @@ export default function BreakdownCard() {
   return (
     <div className={`p-4  h-[40vh] bg-white shadow-md rounded-md md:col-span-2`}>
       <div className="flex flex-col md:flex-row md:justify-between">
-        <h1 className="text-lg md:text-xl font-bold" id='card-header'>Expenses Breakdown:</h1>
+        <h1 className="text-lg md:text-xl font-bold" id='card-header'>Earning/Expenses Breakdown:</h1>
         <div className="relative flex" id="filter-icons">
           <CardButton onClick={handleFilterClick}>
             <img
               src="./summaryPage/filterIcon.png"
               alt="Filter Icon"
-              className="w-4 h-4 md:w-5 md:h-5"
+              className="w-4 h-4 object-contain flex-shrink-0"
             />
           </CardButton>
           <CardButton onClick={handleRemoveItemClick}>
             <img
               src="./summaryPage/removeItemIcon.png"
               alt="Remove Item Icon"
-              className="w-4 h-4 md:w-5 md:h-5"
+              className="w-4 h-4 object-contain flex-shrink-0"
             />
           </CardButton>
           <CardButton onClick={handleAddItemClick}>
             <img
               src="./summaryPage/addItemIcon.png"
               alt="Add Item Button"
-              className="w-4 h-4 md:w-5 md:h-5"
+              className="w-4 h-4 object-contain flex-shrink-0"
             />
           </CardButton>
-          { isFilterOpen && (
-            <div className="absolute mr-10 bg-white shadow-lg rounded p-2 z-10 text-center md:right-0">
-              <ul>
-                <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => handleSortLogic('newest')}>Newest</li>
-                <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => handleSortLogic('oldest')}>Oldest</li>
-                <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => handleSortLogic('alphabetically')}>Alphabetically</li>
-              </ul>
-            </div>
-          )}
+          { isFilterOpen && <FilterDropdown onSort={handleSortLogic} /> }
         </div>
       </div>
-      <div className="w-full h-full pt-2">...Insert table here</div>
+
+      {/* Table content */}
+      <table className="min-w-full divide-y divide-gray-200 mt-4">
+        <TableHeader />
+        <tbody className="bg-white divide-y divide-gray-200">
+          {items.map((item, index) => (
+            <TableRow
+              key={index}
+              title={item.title}
+              tagName={item.tagName}
+              tagColor={item.tagColor}
+              savings={item.savings}
+              date={item.date}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

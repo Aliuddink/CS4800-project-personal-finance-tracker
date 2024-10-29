@@ -8,7 +8,6 @@ export default function SavingCard() {
     console.log("Edit button clicked");
   };
 
-
   return (
     <div className={`p-4 bg-white shadow-md rounded-md h-[20vh]`}>
       <div className="items-center flex justify-between">
@@ -17,7 +16,7 @@ export default function SavingCard() {
           <img
             src="./summaryPage/editButton.png"
             alt="Edit Button"
-            className="h-7 w-7 md:h-10 md:w-10"
+            className="h-7 w-7 object-contain flex-shrink-0"
           />
         </CardButton>
       </div>

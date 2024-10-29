@@ -16,7 +16,7 @@ export default function ExpenseCard() {
           <img
             src="./summaryPage/editButton.png"
             alt="Edit Button"
-            className="h-7 w-7 md:h-10 md:w-10"
+            className="h-7 w-7 md:h-10 md:w-10 object-contain flex-shrink-0"
           />
         </CardButton>
       </div>
