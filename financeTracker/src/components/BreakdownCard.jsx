@@ -36,29 +36,29 @@ export default function BreakdownCard() {
   }
 
   return (
-    <div className="w-[96%] lg:w-[80%] lg:h-[40vh] bg-white p-4">
+    <div className={`p-4  h-[40vh] bg-white shadow-md rounded-md md:col-span-2`}>
       <div className="flex flex-col md:flex-row md:justify-between">
-        <h1 className="text-2xl font-bold" id='card-header'>Expenses Breakdown:</h1>
+        <h1 className="text-lg md:text-xl font-bold" id='card-header'>Expenses Breakdown:</h1>
         <div className="relative flex" id="filter-icons">
           <CardButton onClick={handleFilterClick}>
             <img
               src="./summaryPage/filterIcon.png"
               alt="Filter Icon"
-              className="w-3 h-3 md:w-5 md:h-5"
+              className="w-4 h-4 md:w-5 md:h-5"
             />
           </CardButton>
           <CardButton onClick={handleRemoveItemClick}>
             <img
               src="./summaryPage/removeItemIcon.png"
               alt="Remove Item Icon"
-              className="w-3 h-3 md:w-5 md:h-5"
+              className="w-4 h-4 md:w-5 md:h-5"
             />
           </CardButton>
           <CardButton onClick={handleAddItemClick}>
             <img
               src="./summaryPage/addItemIcon.png"
               alt="Add Item Button"
-              className="w-3 h-3 md:w-5 md:h-5"
+              className="w-4 h-4 md:w-5 md:h-5"
             />
           </CardButton>
           { isFilterOpen && (

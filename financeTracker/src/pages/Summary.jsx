@@ -13,12 +13,14 @@ export default function Summary() {
 
       {/* Summary content */}
       <div className="flex-1 ml-48 w-full h-full flex text-black overflow-y-scroll">
-        {/* Summary Card Container */}
-        <div className="pt-10 flex flex-wrap w-full h-full justify-evenly md:gap-10">
+        <div className="pt-10 grid gap-4 sm:gap-6 md:gap-8 w-full h-full pr-4 grid-cols-1 md:grid-cols-2 md:px-10">
+          
+          {/* Assigning different sizes using grid column and row spans */}
           <ExpenseCard />
           <SavingCard />
           <ComparisonCard />
           <BreakdownCard />
+          
         </div>
       </div>
     </div>

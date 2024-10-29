@@ -10,14 +10,14 @@ export default function SavingCard() {
 
 
   return (
-    <div className="h-[18vh] w-[96%] lg:w-[30vw] lg:h-1/5 bg-white p-4">
+    <div className={`p-4 bg-white shadow-md rounded-md h-[20vh]`}>
       <div className="items-center flex justify-between">
         <h1 className="text-lg" id="card-header">Savings:</h1>
         <CardButton>
           <img
             src="./summaryPage/editButton.png"
             alt="Edit Button"
-            className="h-10 w-10"
+            className="h-7 w-7 md:h-10 md:w-10"
           />
         </CardButton>
       </div>
