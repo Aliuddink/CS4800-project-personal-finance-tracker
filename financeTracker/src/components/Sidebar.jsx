@@ -28,7 +28,7 @@ export default function Sidebar() {
               alt="Summary Icon"
               className="h-[35px] w-[35px] object-center"
             />
-            <a href="#">Summary</a>
+            <a href="/summary">Summary</a>
           </li>
           <li className="flex gap-2 items-center">
             <img
@@ -36,7 +36,7 @@ export default function Sidebar() {
               alt="BudgetBot Icon"
               className="h-[35px] w-[35px] object-center"
             />
-            <a href="#">BudgetBot</a>
+            <a href="/budgetbot">BudgetBot</a>
           </li>
           <li className="flex gap-2 items-center">
             <img
