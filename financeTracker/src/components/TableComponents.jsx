@@ -3,18 +3,18 @@ import React from 'react';
 // TableHeader Component
 export function TableHeader() {
   return (
-    <thead>
+    <thead className='text-center items-center border-b border-neutral-400'>
       <tr>
-        <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-800 tracking-wider">
+        <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
           Title
         </th>
-        <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-800 tracking-wider">
+        <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
           Tags
         </th>
-        <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-800 tracking-wider">
+        <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
           Savings
         </th>
-        <th scope="col" className="px-6 py-3 text-left text-xs font-bold text-gray-800 tracking-wider">
+        <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
           Date
         </th>
       </tr>
@@ -26,11 +26,11 @@ export function TableHeader() {
 // Usage: <TableRow title="Chipotle" tagName="food" savings="$724.47" date="09/19/2024" />
 export function TableRow({ title, tagName, savings, date }) {
   return (
-    <tr>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+    <tr className='text-center divide-x divide-neutral-400'>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
         {title}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+      <td className="px-6 py-4 whitespace-nowrap flex justify-center text-sm text-gray-800 ">
         <TableTag tagName={tagName} />
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
@@ -80,7 +80,7 @@ export function TableTag({ tagName }) {
     }
 
     return (
-        <div className={`text-center py-0.5 px-2 md:px-6 text-black ${color}`}>
+        <div className={`text-center py-0.5 px-3 md:px-6 md:w-28 text-black ${color}`}>
             {tagName.toUpperCase()}
         </div>
     );
