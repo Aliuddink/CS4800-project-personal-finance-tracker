@@ -24,7 +24,7 @@ export function TableHeader() {
 
 // TableRow Component
 // Usage: <TableRow title="Chipotle" tagName="food" savings="$724.47" date="09/19/2024" />
-export function TableRow({ title, tagName, savings, date }) {
+export function TableRow({ title, tagName, savings, date, isDeleteOn, onDelete }) {
   return (
     <tr className='text-center divide-x divide-neutral-400'>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
@@ -39,6 +39,13 @@ export function TableRow({ title, tagName, savings, date }) {
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
         {date}
       </td>
+      {isDeleteOn && (
+        <td className='whitespace-nowrap text-sm text-gray-800 px-2'>
+          <button onClick={onDelete} className="bg-neutral-100 text-red-500 hover:text-red-700 hover:border-neutral-500">
+            X
+          </button>
+        </td>
+      )}
     </tr>
   );
 }
