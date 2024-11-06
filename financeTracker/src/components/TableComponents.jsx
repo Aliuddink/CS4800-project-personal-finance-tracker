@@ -81,13 +81,24 @@ export function TableTag({ tagName }) {
         case 'RENT':
             color = 'bg-amber-500';
             break;
-        // Add more tag colors here
+        case 'UTILITIES':
+            color = 'bg-green-400';
+            break;
+        case 'TRANSPORTATION':
+            color = 'bg-blue-400';
+            break;
+        case 'HEALTHCARE':
+            color = 'bg-red-400';
+            break;
+        case 'LEISURE':
+            color = 'bg-purple-400';
+            break;
         default:
             color = 'bg-gray-400';
     }
 
     return (
-        <div className={`text-center py-0.5 px-3 md:px-6 md:w-28 text-black ${color}`}>
+        <div className={`text-center py-0.5 px-3 md:px-6 md:w-[12vw] object-contain flex-shrink text-black ${color}`}>
             {tagName.toUpperCase()}
         </div>
     );
