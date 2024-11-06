@@ -18,6 +18,18 @@ export default function BreakdownCard() {
       savings: "734.56",
       date: "2024-09-12",
     },
+    {
+      title: "Electricity",
+      tagName: "utilities",
+      savings: "100.00",
+      date: "2024-09-01",
+    },
+    {
+      title: "Bus Pass",
+      tagName: "transportation",
+      savings: "50.00",
+      date: "2024-09-01",
+    }
   ]);
 
   const [newItem, setNewItem] = React.useState({
@@ -177,6 +189,7 @@ export default function BreakdownCard() {
       )}
 
       {/* Table */}
+      {/* Table Components are in TableComponents file for encapsulation */}
       <div className="overflow-x-auto flex md:justify-center">
         <table className="min-w-[95%] mt-4 px-4">
           <TableHeader />
@@ -193,6 +206,7 @@ export default function BreakdownCard() {
               />
             ))}
 
+            {/* Add Item Row */}
             {isAddItemOn && (
               <tr className="w-auto">
                 <td className="">
@@ -239,6 +253,8 @@ export default function BreakdownCard() {
                     onChange={handleNewItemChange}
                   />
                 </td>
+
+                {/* Add/Cancel Button */}
                 <td className="">
                   {Object.values(newItem).every(
                     (value) => value.trim() === ""
