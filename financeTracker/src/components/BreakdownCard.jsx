@@ -9,7 +9,7 @@ export default function BreakdownCard() {
     {
       title: "Chipotle",
       tagName: "food",
-      savings: "724.47",
+      savings: "13.47",
       date: "2024-09-19",
     },
     {
@@ -62,7 +62,7 @@ export default function BreakdownCard() {
 
     if (name === "savings") {
       if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-        errorMsgs[name] = "Savings should be a valid number";
+        errorMsgs[name] = "Expenses should be a valid number";
       } else {
         delete errorMsgs[name];
       }
@@ -224,7 +224,7 @@ export default function BreakdownCard() {
                   <input
                     type="text"
                     name="savings"
-                    placeholder="Savings"
+                    placeholder="Expenses"
                     className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
                     value={newItem.savings}
                     onChange={handleNewItemChange}
