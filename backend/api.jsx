@@ -37,7 +37,7 @@ export const resetPassword = async (resetData) => {
     } catch (error) {
         throw error.response.data; // Handle error response
     }
-    
+}
 export const filterExpenses = async (userId, filters) => {
     try {
         const response = await axios.get(`${API_URL}/api/expenses/filter`, {
@@ -51,5 +51,4 @@ export const filterExpenses = async (userId, filters) => {
     } catch (error) {
         throw error.response?.data || { message: 'Error fetching filtered expenses' };
     }
-};
 };
