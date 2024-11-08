@@ -25,15 +25,32 @@ def get_db_connection():
         print(f"Error connecting to the database: {e}")
         return None
 
-# Register a new user
+# This is being fixed
 def register_user(username, password, email):
-    query = "INSERT INTO users (username, password, email) VALUES (%s, %s, %s)"
+    # Check if the username already exists
+    check_query = "SELECT 1 FROM users WHERE username = %s"
+    existing_user = fetch_one(check_query, (username,))
+    
+    if existing_user:
+        raise ValueError("Username already exists. Please choose a different one.")
+
+    print("Adding new user with the following details:")
+    print(f"Username: {username}")
+    print(f"Password: {password}")  
+    print(f"Email: {email}")
+
+    # Proceed with registration if username doesn't exist
+    query = "INSERT INTO users (username, password_hash, email) VALUES (%s, %s, %s)"
     execute_query(query, (username, password, email))
+
+
 
 # Check login credentials
 def login_user(username, password):
-    query = "SELECT * FROM users WHERE username = %s AND password = %s"
-    return fetch_one(query, (username, password))
+    query = "SELECT * FROM users WHERE username = %s AND password_hash = %s"
+    result = fetch_one(query, (username, password))  
+    return result
+
 
 # Fetch user by email
 def get_user_by_email(email):

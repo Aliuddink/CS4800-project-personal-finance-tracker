@@ -1,7 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  
+  const navigate = useNavigate(); 
+
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/login', {
+        username,
+        password,
+      });
+
+      if (response.status === 200) {
+        navigate('/home');
+      }
+    } catch (error) {
+      console.error("Error logging in:", error);
+      alert(error.response?.data?.message || "Login failed");
+    }
+  };
+
+
+
   return (
     <>
       <header className="bg-black w-full fixed top-0 left-0 z-50">
@@ -39,8 +64,10 @@ function Login() {
                   className="w-12 h-12 object-cover rounded-full mr-4" // Adjust image size and margin
                 />
                 <input
-                  type="text"
-                  placeholder="Username"
+                   type="text"
+                   placeholder="Username"
+                   value={username}
+                   onChange={(e) => setUsername(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl" // Updated className
                 />
               </div>
@@ -51,8 +78,10 @@ function Login() {
                   className="w-12 h-12 object-cover rounded-full mr-4" // Adjust image size and margin
                 />
                 <input
-                  type="text"
+                  type="password"
                   placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl" // Updated className
                 />
               </div>
@@ -62,7 +91,12 @@ function Login() {
             </div>
             <div className="flex justify-center mt-4"> {/* Center the button below the text */}
               <div className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white text-lg font-semibold">Login</span>
+                <button
+                  onClick={handleLogin}  
+                  className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg"
+                >
+                  <span className="text-white text-lg font-semibold">Login</span>
+                </button>
               </div>
             </div>
             <div className="flex justify-center"> {/* Center the text */}

@@ -1,7 +1,43 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Signup() {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async () => {
+    console.log("Username:", username);
+    console.log("Email:", email);
+    console.log("Password:", password);
+    console.log("Confirm Password:", confirmPassword);
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+    }
+
+    try {
+        const response = await axios.post('http://localhost:5000/register', {
+            username,
+            email,
+            password,
+            confirm_password: confirmPassword
+        });
+
+        if (response.status === 201) {
+            navigate('/login');
+        }
+    } catch (error) {
+        console.error("Error registering user:", error);
+        alert(error.response?.data?.message || "Registration failed");
+    }
+};
+
+
   return (
     <>
       <header className="bg-black w-full fixed top-0 left-0 z-50">
@@ -41,6 +77,8 @@ function Signup() {
                 <input
                   type="text"
                   placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl"
                 />
               </div>
@@ -53,6 +91,8 @@ function Signup() {
                 <input
                   type="email"
                   placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl"
                 />
               </div>
@@ -63,8 +103,10 @@ function Signup() {
                   className="w-12 h-12 object-cover rounded-full mr-4"
                 />
                 <input
-                  type="password"
-                  placeholder="Password"
+                   type="password"
+                   placeholder="Password"
+                   value={password}
+                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl"
                 />
               </div>
@@ -75,8 +117,10 @@ function Signup() {
                   className="w-12 h-12 object-cover rounded-full mr-4"
                 />
                 <input
-                  type="password"
-                  placeholder="Confirm Password"
+                   type="password"
+                   placeholder="Confirm Password"
+                   value={confirmPassword}
+                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl"
                 />
               </div>
@@ -86,9 +130,19 @@ function Signup() {
                 <span className="text-white text-lg font-semibold">Login</span>
               </div>
             </div>
+            <div className="flex justify-center mt-4"> 
+              <button
+                onClick={handleSubmit}
+                className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg"
+              >
+                <span className="text-white text-lg font-semibold">Sign Up</span>
+              </button>
+            </div>
+
             <div className="flex justify-center mt-2">
               <span className="text-sm text-gray-600">Have an account?
                 <Link to="/Login">
+                
                   <span className="text-green-500 cursor-pointer"> Sign in</span>
                 </Link>
               </span>
