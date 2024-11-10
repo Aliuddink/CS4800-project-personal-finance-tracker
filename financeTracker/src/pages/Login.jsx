@@ -86,8 +86,12 @@ function Login() {
                 />
               </div>
             </div>
-            <div className="flex-1 flex justify-end"> {/* Use flex to align text on the right */}
-              <span className="text-sm text-green-500 cursor-pointer">Forgot Username/Password?</span>
+            <div className="flex-1 flex justify-end"> 
+              <span className="text-sm text-green-500 cursor-pointer">
+                <Link to="/forgot">
+                  <span className="text-green-500 cursor-pointer"> Forgot Username/Password?</span>
+                </Link>
+              </span>
             </div>
             <div className="flex justify-center mt-4"> {/* Center the button below the text */}
               <div className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg">
