@@ -253,6 +253,17 @@ export default function BreakdownCard() {
                     onChange={handleNewItemChange}
                   />
                 </td>
+                <td>
+                  <select
+                    name="type"
+                    className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
+                    value={newItem.type}
+                    onChange={handleNewItemChange}
+                  >
+                    <option value="Expense">Expense</option>
+                    <option value="Earnings">Earnings</option>
+                  </select>
+                </td>
 
                 {/* Add/Cancel Button */}
                 <td className="">
