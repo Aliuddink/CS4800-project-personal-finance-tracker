@@ -7,6 +7,8 @@ import Signup from './pages/Signup'
 import PersonalInfo from './pages/PersonalInfo';
 import Summary from './pages/Summary';
 import BudgetBot from './pages/Budgetbot'
+import ForgotPassword from './pages/ForgotPassword';
+
 function App() {
   return (
     <div>
@@ -19,6 +21,7 @@ function App() {
           <Route path = '/personal-info' element = {<PersonalInfo/>}/>
           <Route path = '/summary' element = {<Summary/>}/>
           <Route path = '/budgetbot' element = {<BudgetBot/>}/>
+          <Route path= '/forgot' element={<ForgotPassword />} />
         </Routes>
       </BrowserRouter>
     </div>
