@@ -11,25 +11,22 @@ export default function BreakdownCard() {
       tagName: "food",
       savings: "13.47",
       date: "2024-09-19",
+      type: "expense",
     },
     {
-      title: "Housing",
+      title: "Salary",
+      tagName: "income",
+      savings: "2000.00",
+      date: "2024-09-10",
+      type: "earning",
+    },
+    {
+      title: "Rent",
       tagName: "rent",
-      savings: "734.56",
-      date: "2024-09-12",
-    },
-    {
-      title: "Electricity",
-      tagName: "utilities",
-      savings: "100.00",
+      savings: "800.00",
       date: "2024-09-01",
+      type: "expense",
     },
-    {
-      title: "Bus Pass",
-      tagName: "transportation",
-      savings: "50.00",
-      date: "2024-09-01",
-    }
   ]);
 
   const [newItem, setNewItem] = React.useState({
@@ -37,6 +34,7 @@ export default function BreakdownCard() {
     tagName: "",
     savings: "",
     date: "",
+    type: "expense",
   });
 
   const predefinedTags = [
@@ -51,41 +49,30 @@ export default function BreakdownCard() {
 
   const [errors, setErrors] = React.useState({});
 
-  const handleAddItemClick = () => {
-    setIsAddItemOn(!isAddItemOn);
-  };
+  // Add Item Click Handlers
+  const handleAddItemClick = () => setIsAddItemOn(!isAddItemOn);
+  const handleRemoveItemClick = () => setIsDeleteItemOn(!isDeleteItemOn);
 
-  const handleRemoveItemClick = () => {
-    setIsDeleteItemOn(!isDeleteItemOn);
-  };
-
-
-  // Add Item Logic----------------------------------------------
+  // Add Item Validation
   const validateFields = (name, value) => {
     const errorMsgs = { ...errors };
 
     if (name === "title" || name === "tagName") {
-      if (!value.trim()) {
-        errorMsgs[name] = `${name} cannot be empty`;
-      } else {
-        delete errorMsgs[name];
-      }
+      errorMsgs[name] = value.trim() ? "" : `${name} cannot be empty`;
     }
 
     if (name === "savings") {
-      if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-        errorMsgs[name] = "Expenses should be a valid number";
+      if (value.trim() === "") {
+        errorMsgs[name] = "Amount cannot be empty";
+      } else if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+        errorMsgs[name] = "Amount should be a valid number";
       } else {
         delete errorMsgs[name];
       }
     }
 
     if (name === "date") {
-      if (!value) {
-        errorMsgs[name] = "Please select a date";
-      } else {
-        delete errorMsgs[name];
-      }
+      errorMsgs[name] = value ? "" : "Please select a date";
     }
 
     setErrors(errorMsgs);
@@ -97,103 +84,68 @@ export default function BreakdownCard() {
     validateFields(name, value);
   };
 
+  // Add New Item
   const handleAddNewItem = () => {
-    const isValid = Object.keys(newItem).every(
-      (key) => !errors[key] && newItem[key].trim()
-    );
+    const isValid =
+      Object.values(newItem).every((value) => value.trim() !== "") &&
+      Object.keys(errors).every((key) => !errors[key]);
 
     if (isValid) {
       setItems((prevItems) => [...prevItems, newItem]);
-      setNewItem({ title: "", tagName: "", savings: "", date: "" });
+      setNewItem({ title: "", tagName: "", savings: "", date: "", type: "expense" });
       setIsAddItemOn(false);
       setErrors({});
     } else {
-      alert(
-        "The input box is empty or invalid. Please fill in the correct information."
-      );
+      alert("Please fill in all fields correctly.");
     }
   };
 
-
-  // Delete Item Logic----------------------------------------------
+  // Delete Item
   const handleDeleteItem = (index) => {
     setItems((prevItems) => prevItems.filter((_, i) => i !== index));
   };
 
-
-  // Sort Logic-----------------------------------------------------
+  // Sort Items
   const handleSortLogic = (type) => {
     if (type === "newest") {
-      setItems((prevItems) =>
-        [...prevItems].sort((a, b) => new Date(b.date) - new Date(a.date))
-      );
+      setItems((prevItems) => [...prevItems].sort((a, b) => new Date(b.date) - new Date(a.date)));
     } else if (type === "oldest") {
-      setItems((prevItems) =>
-        [...prevItems].sort((a, b) => new Date(a.date) - new Date(b.date))
-      );
+      setItems((prevItems) => [...prevItems].sort((a, b) => new Date(a.date) - new Date(b.date)));
     } else if (type === "alphabetically") {
-      setItems((prevItems) =>
-        [...prevItems].sort((a, b) => a.title.localeCompare(b.title))
-      );
+      setItems((prevItems) => [...prevItems].sort((a, b) => a.title.localeCompare(b.title)));
     }
-
     setIsFilterOpen(false);
   };
 
   return (
-    <div className={`p-4 h-[40vh] bg-white shadow-md rounded-md md:col-span-2`}>
+    <div className="p-4 h-[40vh] bg-white shadow-md rounded-md md:col-span-2">
       <div className="flex flex-col md:flex-row md:justify-between">
-        {/* Title */}
-        <h1 className="text-lg md:text-xl font-bold">
-          Earning/Expenses Breakdown:
-        </h1>
+        <h1 className="text-lg md:text-xl font-bold">Earnings/Expenses Breakdown:</h1>
 
-        {/* Right Buttons */}
         <div className="relative flex">
-          <button className="bg-transparent border-none focus:outline-none" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-            <img
-              src="./summaryPage/filterIcon.png"
-              alt="Filter Icon"
-              className="w-4 h-4 object-contain flex-shrink-0"
-            />
+          <button onClick={() => setIsFilterOpen(!isFilterOpen)}>
+            <img src="./summaryPage/filterIcon.png" alt="Filter" className="w-4 h-4" />
           </button>
-          <button className="bg-transparent border-none focus:outline-none" onClick={handleRemoveItemClick}>
-            <img
-              src="./summaryPage/removeItemIcon.png"
-              alt="Add Item Button"
-              className="w-4 h-4 object-contain flex-shrink-0"
-            />
+          <button onClick={handleRemoveItemClick}>
+            <img src="./summaryPage/removeItemIcon.png" alt="Remove" className="w-4 h-4" />
           </button>
-          <button className="bg-transparent border-none focus:outline-none" onClick={handleAddItemClick}>
-            <img
-              src="./summaryPage/addItemIcon.png"
-              alt="Add Item Button"
-              className="w-4 h-4 object-contain flex-shrink-0"
-            />
+          <button onClick={handleAddItemClick}>
+            <img src="./summaryPage/addItemIcon.png" alt="Add" className="w-4 h-4" />
           </button>
           {isFilterOpen && <FilterDropdown onSort={handleSortLogic} />}
         </div>
       </div>
 
-      {/* Error Message (Displayed during add item mode) */}
       {Object.keys(errors).length > 0 && isAddItemOn && (
         <div className="bg-red-100 text-red-700 p-2 rounded-md my-4">
-          <ul>
-            {Object.values(errors).map((error, index) => (
-              <li key={index} className="text-sm">
-                {error}
-              </li>
-            ))}
-          </ul>
+          <ul>{Object.values(errors).map((error, index) => <li key={index}>{error}</li>)}</ul>
         </div>
       )}
 
-      {/* Table */}
-      {/* Table Components are in TableComponents file for encapsulation */}
       <div className="overflow-x-auto flex md:justify-center">
         <table className="min-w-[95%] mt-4 px-4">
           <TableHeader />
-          <tbody className="bg-white">
+          <tbody>
             {items.map((item, index) => (
               <TableRow
                 key={index}
@@ -201,82 +153,34 @@ export default function BreakdownCard() {
                 tagName={item.tagName}
                 savings={`$${item.savings}`}
                 date={item.date}
+                type={item.type}
                 isDeleteOn={isDeleteItemOn}
                 onDelete={() => handleDeleteItem(index)}
               />
             ))}
 
-            {/* Add Item Row */}
             {isAddItemOn && (
-              <tr className="w-auto">
-                <td className="">
-                  <input
-                    type="text"
-                    name="title"
-                    placeholder="Title"
-                    className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
-                    value={newItem.title}
-                    onChange={handleNewItemChange}
-                  />
-                </td>
-                <td className="">
-                  <select
-                    name="tagName"
-                    className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
-                    value={newItem.tagName}
-                    onChange={handleNewItemChange}
-                  >
+              <tr>
+                <td><input type="text" name="title" placeholder="Title" onChange={handleNewItemChange} /></td>
+                <td>
+                  <select name="tagName" onChange={handleNewItemChange}>
                     <option value="">Select Tag</option>
                     {predefinedTags.map((tag, index) => (
-                      <option key={index} value={tag.toUpperCase()}>
-                        {tag}
-                      </option>
+                      <option key={index} value={tag.toLowerCase()}>{tag}</option>
                     ))}
                   </select>
                 </td>
-                <td className="">
-                  <input
-                    type="text"
-                    name="savings"
-                    placeholder="Expenses"
-                    className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
-                    value={newItem.savings}
-                    onChange={handleNewItemChange}
-                  />
+                <td>
+                  <input type="text" name="savings" placeholder="Amount" onChange={handleNewItemChange} />
                 </td>
-                <td className="">
-                  <input
-                    type="date"
-                    name="date"
-                    className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
-                    value={newItem.date}
-                    onChange={handleNewItemChange}
-                  />
+                <td><input type="date" name="date" onChange={handleNewItemChange} /></td>
+                <td>
+                  <select name="type" onChange={handleNewItemChange}>
+                    <option value="expense">Expense</option>
+                    <option value="earning">Earning</option>
+                  </select>
                 </td>
-
-                {/* Add/Cancel Button */}
-                <td className="">
-                  {Object.values(newItem).every(
-                    (value) => value.trim() === ""
-                  ) ? (
-                    <button
-                      onClick={() => {
-                        handleAddItemClick();
-                        setErrors({});
-                      }}
-                      className="bg-red-500 text-white px-4 py-1 rounded-md"
-                    >
-                      Cancel
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleAddNewItem}
-                      className="bg-green-500 text-white px-4 py-1 rounded-md"
-                    >
-                      Add
-                    </button>
-                  )}
-                </td>
+                <td><button onClick={handleAddNewItem}>Add</button></td>
               </tr>
             )}
           </tbody>

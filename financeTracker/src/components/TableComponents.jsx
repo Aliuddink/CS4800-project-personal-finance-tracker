@@ -12,7 +12,7 @@ export function TableHeader() {
           Tags
         </th>
         <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
-          Expenses
+          Expenses/Earnings
         </th>
         <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
           Date
