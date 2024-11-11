@@ -8,9 +8,9 @@ export default function ExpenseCard() {
   };
 
   return (
-    <div className={`p-4 h-[20vh] bg-white shadow-md rounded-md`}>
+    <div className='p-4 h-full bg-white shadow-md rounded-md flex flex-col justify-between'>
       <div className="items-center flex justify-between">
-        <h1 className="text-lg" id="card-header">This month's expenses:</h1>
+        <h1 className="text-lg md:text-xl lg:text-2xl" id="card-header">This month's expenses:</h1>
         <button className="bg-transparent border-none focus:outline-none" onClick={handleClick}>
           <img
             src="./summaryPage/editButton.png"
@@ -19,7 +19,7 @@ export default function ExpenseCard() {
           />
         </button>
       </div>
-      <h2 className="text-3xl lg:text-4xl font-bold p-2">${expenses}</h2>
+      <h2 className="text-3xl md:text-4xl 2xl:text-5xl font-bold p-2">${expenses}</h2>
     </div>
   );
 }

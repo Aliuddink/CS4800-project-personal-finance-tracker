@@ -8,11 +8,11 @@ export function TableHeader() {
         <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
           Title
         </th>
-        <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
+        <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider w-1/5">
           Tags
         </th>
         <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
-          Expenses
+          Expenses/Earnings
         </th>
         <th scope="col" className="pt-2 py-3 text-xs font-bold text-gray-800 tracking-wider">
           Date
@@ -24,7 +24,7 @@ export function TableHeader() {
 
 // TableRow Component
 // Usage: <TableRow title="Chipotle" tagName="food" savings="$724.47" date="09/19/2024" />
-export function TableRow({ title, tagName, savings, date, isDeleteOn, onDelete }) {
+export function TableRow({ title, tagName, amount, date, type, isDeleteOn, onDelete }) {
   return (
     <tr className='text-center divide-x divide-neutral-400'>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
@@ -33,8 +33,8 @@ export function TableRow({ title, tagName, savings, date, isDeleteOn, onDelete }
       <td className="px-6 py-4 whitespace-nowrap flex justify-center text-sm text-gray-800 ">
         <TableTag tagName={tagName} />
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
-        {savings}
+      <td className={`px-6 py-4 whitespace-nowrap text-sm ${type === 'Expense' ? 'text-red-500' : 'text-emerald-600'}`}>
+        {amount}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
         {date}
@@ -82,7 +82,7 @@ export function TableTag({ tagName }) {
             color = 'bg-amber-500';
             break;
         case 'UTILITIES':
-            color = 'bg-green-400';
+            color = 'bg-teal-400';
             break;
         case 'TRANSPORTATION':
             color = 'bg-blue-400';
@@ -93,13 +93,16 @@ export function TableTag({ tagName }) {
         case 'LEISURE':
             color = 'bg-purple-400';
             break;
+        case 'EARNINGS':
+            color = 'bg-green-600';
+            break;
         default:
             color = 'bg-gray-400';
     }
 
     return (
-        <div className={`text-center py-0.5 px-3 md:px-6 md:w-[12vw] object-contain flex-shrink text-black ${color}`}>
-            {tagName.toUpperCase()}
-        </div>
+      <div className={`text-center py-0.5 px-3 w-full object-contain flex-shrink-0 text-black ${color} truncate`}>
+      {tagName.toUpperCase()}
+      </div>
     );
 }

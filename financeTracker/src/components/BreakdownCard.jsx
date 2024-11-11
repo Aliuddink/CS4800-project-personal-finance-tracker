@@ -9,34 +9,46 @@ export default function BreakdownCard() {
     {
       title: "Chipotle",
       tagName: "food",
-      savings: "13.47",
+      amount: "13.47",
       date: "2024-09-19",
+      type: "Expense",
     },
     {
       title: "Housing",
       tagName: "rent",
-      savings: "734.56",
+      amount: "734.56",
       date: "2024-09-12",
+      type: "Expense",
     },
     {
       title: "Electricity",
       tagName: "utilities",
-      savings: "100.00",
+      amount: "100.00",
       date: "2024-09-01",
+      type: "Expense",
     },
     {
       title: "Bus Pass",
       tagName: "transportation",
-      savings: "50.00",
+      amount: "50.00",
       date: "2024-09-01",
+      type: "Expense",
+    },
+    {
+      title: "Salary",
+      tagName: "earnings",
+      amount: "2000.00",
+      date: "2024-09-01",
+      type: "Earnings",
     }
   ]);
 
   const [newItem, setNewItem] = React.useState({
     title: "",
     tagName: "",
-    savings: "",
+    amount: "",
     date: "",
+    type: "Expense",
   });
 
   const predefinedTags = [
@@ -72,9 +84,9 @@ export default function BreakdownCard() {
       }
     }
 
-    if (name === "savings") {
+    if (name === "amount") {
       if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-        errorMsgs[name] = "Expenses should be a valid number";
+        errorMsgs[name] = "Amount should be a valid number";
       } else {
         delete errorMsgs[name];
       }
@@ -104,7 +116,7 @@ export default function BreakdownCard() {
 
     if (isValid) {
       setItems((prevItems) => [...prevItems, newItem]);
-      setNewItem({ title: "", tagName: "", savings: "", date: "" });
+      setNewItem({ title: "", tagName: "", amount: "", date: "", type: "Expense" });
       setIsAddItemOn(false);
       setErrors({});
     } else {
@@ -141,7 +153,7 @@ export default function BreakdownCard() {
   };
 
   return (
-    <div className={`p-4 h-[40vh] bg-white shadow-md rounded-md md:col-span-2`}>
+    <div className={`p-4 bg-white shadow-md rounded-md md:col-span-2`}>
       <div className="flex flex-col md:flex-row md:justify-between">
         {/* Title */}
         <h1 className="text-lg md:text-xl font-bold">
@@ -190,7 +202,7 @@ export default function BreakdownCard() {
 
       {/* Table */}
       {/* Table Components are in TableComponents file for encapsulation */}
-      <div className="overflow-x-auto flex md:justify-center">
+      <div className="overflow-x-auto flex lg:justify-center px-1">
         <table className="min-w-[95%] mt-4 px-4">
           <TableHeader />
           <tbody className="bg-white">
@@ -199,8 +211,9 @@ export default function BreakdownCard() {
                 key={index}
                 title={item.title}
                 tagName={item.tagName}
-                savings={`$${item.savings}`}
+                amount={`$${item.amount}`}
                 date={item.date}
+                type={item.type}
                 isDeleteOn={isDeleteItemOn}
                 onDelete={() => handleDeleteItem(index)}
               />
@@ -237,10 +250,10 @@ export default function BreakdownCard() {
                 <td className="">
                   <input
                     type="text"
-                    name="savings"
-                    placeholder="Expenses"
+                    name="amount"
+                    placeholder="Amount"
                     className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
-                    value={newItem.savings}
+                    value={newItem.amount}
                     onChange={handleNewItemChange}
                   />
                 </td>
@@ -256,7 +269,7 @@ export default function BreakdownCard() {
                 <td>
                   <select
                     name="type"
-                    className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
+                    className="w-28 xl:w-full bg-white h-8 px-2 border border-gray-300 text-center flex-shrink-0"
                     value={newItem.type}
                     onChange={handleNewItemChange}
                   >
@@ -267,22 +280,24 @@ export default function BreakdownCard() {
 
                 {/* Add/Cancel Button */}
                 <td className="">
-                  {Object.values(newItem).every(
-                    (value) => value.trim() === ""
+                  {/* If all fields are empty except "type" field, show cancel button */}
+                  {/* Else, show add button */}
+                  {Object.entries(newItem).every(
+                    ([key, value]) => key === "type" || value.trim() === ""
                   ) ? (
                     <button
                       onClick={() => {
                         handleAddItemClick();
                         setErrors({});
                       }}
-                      className="bg-red-500 text-white px-4 py-1 rounded-md"
+                      className="bg-red-500 text-white px-4 py-1 w-[8vw] rounded-md"
                     >
                       Cancel
                     </button>
                   ) : (
                     <button
                       onClick={handleAddNewItem}
-                      className="bg-green-500 text-white px-4 py-1 rounded-md"
+                      className="bg-green-500 text-white px-4 py-1 w-[8vw] rounded-md"
                     >
                       Add
                     </button>
