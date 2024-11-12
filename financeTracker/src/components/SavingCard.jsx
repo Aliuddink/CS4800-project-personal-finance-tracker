@@ -52,8 +52,18 @@ function SavingCard() {
                 onChange={(e) => setTempExpenses(e.target.value)}
                 className="w-full px-2 py-1 text-lg border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              <button onClick={handleSaveExpenses} className="text-blue-500 hover:text-blue-700">Save</button>
-              <button onClick={handleCancelExpenses} className="text-gray-500 hover:text-gray-700">Cancel</button>
+              <button
+                onClick={handleSaveExpenses}
+                className="bg-white text-blue-500 hover:text-blue-700 p-2 rounded-md border border-gray-300"
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancelExpenses}
+                className="bg-white text-gray-500 hover:text-gray-700 p-2 rounded-md border border-gray-300"
+              >
+                Cancel
+              </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -78,8 +88,18 @@ function SavingCard() {
                 onChange={(e) => setTempSavings(e.target.value)}
                 className="w-full px-2 py-1 text-lg border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              <button onClick={handleSaveSavings} className="text-blue-500 hover:text-blue-700">Save</button>
-              <button onClick={handleCancelSavings} className="text-gray-500 hover:text-gray-700">Cancel</button>
+              <button
+                onClick={handleSaveSavings}
+                className="bg-white text-blue-500 hover:text-blue-700 p-2 rounded-md border border-gray-300"
+              >
+                Save
+              </button>
+              <button
+                onClick={handleCancelSavings}
+                className="bg-white text-gray-500 hover:text-gray-700 p-2 rounded-md border border-gray-300"
+              >
+                Cancel
+              </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
