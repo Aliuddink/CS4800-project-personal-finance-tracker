@@ -50,26 +50,6 @@ export function TableRow({ title, tagName, amount, date, type, isDeleteOn, onDel
   );
 }
 
-// FilterDropdown Component
-// Usage: <FilterDropdown onSort={handleSortLogic} />
-export function FilterDropdown({ onSort }) {
-  return (
-    <div className="absolute mr-10 bg-white shadow-lg rounded p-2 z-10 text-center md:right-0">
-      <ul>
-        <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => onSort('newest')}>
-          Newest
-        </li>
-        <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => onSort('oldest')}>
-          Oldest
-        </li>
-        <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => onSort('alphabetically')}>
-          Alphabetically
-        </li>
-      </ul>
-    </div>
-  );
-}
-
 // TableTag Component
 // Usage: <TableTag tagName="food" />
 export function TableTag({ tagName }) {
