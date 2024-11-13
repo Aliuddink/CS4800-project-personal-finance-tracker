@@ -1,10 +1,11 @@
 import React from "react";
-import { TableHeader, TableRow, FilterDropdown } from "./TableComponents";
+import { TableHeader, TableRow } from "./TableComponents";
 
 export default function BreakdownCard() {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [isAddItemOn, setIsAddItemOn] = React.useState(false);
   const [isDeleteItemOn, setIsDeleteItemOn] = React.useState(false);
+  const [isAddItemDropdownOpen, setIsAddItemDropdownOpen] = React.useState(false);
   const [items, setItems] = React.useState([
     {
       title: "Chipotle",
@@ -40,7 +41,7 @@ export default function BreakdownCard() {
       amount: "2000.00",
       date: "2024-09-01",
       type: "Earnings",
-    }
+    },
   ]);
 
   const [newItem, setNewItem] = React.useState({
@@ -63,16 +64,21 @@ export default function BreakdownCard() {
 
   const [errors, setErrors] = React.useState({});
 
-  const handleAddItemClick = () => {
+  // Add Item Logic (Manually)----------------------------------------------
+  const handleAddItemButtonClick = () => {
+    setIsAddItemDropdownOpen(true);
+  };
+
+  const handleScannerAdd = () => {
+    setIsAddItemDropdownOpen(false);
+    console.log("Scanner option Clicked");
+  };
+
+  const handleManualAdd = () => {
+    setIsAddItemDropdownOpen(false);
     setIsAddItemOn(!isAddItemOn);
   };
 
-  const handleRemoveItemClick = () => {
-    setIsDeleteItemOn(!isDeleteItemOn);
-  };
-
-
-  // Add Item Logic----------------------------------------------
   const validateFields = (name, value) => {
     const errorMsgs = { ...errors };
 
@@ -116,7 +122,13 @@ export default function BreakdownCard() {
 
     if (isValid) {
       setItems((prevItems) => [...prevItems, newItem]);
-      setNewItem({ title: "", tagName: "", amount: "", date: "", type: "Expense" });
+      setNewItem({
+        title: "",
+        tagName: "",
+        amount: "",
+        date: "",
+        type: "Expense",
+      });
       setIsAddItemOn(false);
       setErrors({});
     } else {
@@ -126,12 +138,14 @@ export default function BreakdownCard() {
     }
   };
 
+  // Delete Item Logic (Manually)----------------------------------------------
+  const handleRemoveItemClick = () => {
+    setIsDeleteItemOn(!isDeleteItemOn);
+  };
 
-  // Delete Item Logic----------------------------------------------
   const handleDeleteItem = (index) => {
     setItems((prevItems) => prevItems.filter((_, i) => i !== index));
   };
-
 
   // Sort Logic-----------------------------------------------------
   const handleSortLogic = (type) => {
@@ -162,28 +176,73 @@ export default function BreakdownCard() {
 
         {/* Right Buttons */}
         <div className="relative flex">
-          <button className="bg-transparent border-none focus:outline-none" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+          <button
+            className="bg-transparent border-none focus:outline-none"
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+          >
             <img
               src="./summaryPage/filterIcon.png"
               alt="Filter Icon"
               className="w-4 h-4 object-contain flex-shrink-0"
             />
           </button>
-          <button className="bg-transparent border-none focus:outline-none" onClick={handleRemoveItemClick}>
+          <button
+            className="bg-transparent border-none focus:outline-none"
+            onClick={handleRemoveItemClick}
+          >
             <img
               src="./summaryPage/removeItemIcon.png"
               alt="Add Item Button"
               className="w-4 h-4 object-contain flex-shrink-0"
             />
           </button>
-          <button className="bg-transparent border-none focus:outline-none" onClick={handleAddItemClick}>
+          <button
+            className="bg-transparent border-none focus:outline-none"
+            onClick={handleAddItemButtonClick}
+          >
             <img
               src="./summaryPage/addItemIcon.png"
               alt="Add Item Button"
               className="w-4 h-4 object-contain flex-shrink-0"
             />
           </button>
-          {isFilterOpen && <FilterDropdown onSort={handleSortLogic} />}
+
+          {/* Add Item Option Dropdown */}
+          {isAddItemDropdownOpen && (
+            <div className="absolute bg-white shadow-lg rounded p-2 z-10 text-center md:right-0">
+              <ul>
+                <li
+                  className="p-1 hover:bg-gray-200 cursor-pointer"
+                  onClick={handleScannerAdd}
+                >
+                  Scanner
+                </li>
+                <li
+                  className="p-1 hover:bg-gray-200 cursor-pointer"
+                  onClick={handleManualAdd}
+                >
+                  Manual
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {/* Filter options Dropdown */}
+          {isFilterOpen && (
+            <div className="absolute mr-10 bg-white shadow-lg rounded p-2 z-10 text-center md:right-0">
+              <ul>
+                <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => handleSortLogic('newest')}>
+                  Newest
+                </li>
+                <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => handleSortLogic('oldest')}>
+                  Oldest
+                </li>
+                <li className="p-1 hover:bg-gray-200 cursor-pointer" onClick={() => handleSortLogic('alphabetically')}>
+                  Alphabetically
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
@@ -278,7 +337,7 @@ export default function BreakdownCard() {
                   </select>
                 </td>
 
-                {/* Add/Cancel Button */}
+                {/* Add/Cancel Button of Add Item Dropdown*/}
                 <td className="">
                   {/* If all fields are empty except "type" field, show cancel button */}
                   {/* Else, show add button */}
@@ -287,7 +346,7 @@ export default function BreakdownCard() {
                   ) ? (
                     <button
                       onClick={() => {
-                        handleAddItemClick();
+                        handleManualAdd();
                         setErrors({});
                       }}
                       className="bg-red-500 text-white px-4 py-1 w-[8vw] rounded-md"
