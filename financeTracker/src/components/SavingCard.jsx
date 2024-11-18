@@ -1,25 +1,90 @@
 import React, { useState } from "react";
 
 export default function SavingCard() {
-  const [savings, setSavings] = useState(1234.56);
+  const [isEditingSavings, setIsEditingSavings] = useState(false);
+  const [savings, setSavings] = useState("1234.56");
+  const [tempSavings, setTempSavings] = useState(savings);
 
-  const handleClick = () => {
-    console.log("Edit button clicked");
+// Allow for savings input
+  const handleEditSavings = () => {
+    setIsEditingSavings(true);
+    setTempSavings(savings); 
   };
 
+  const handleSaveSavings = () => {
+    setSavings(tempSavings);
+    setIsEditingSavings(false);
+  };
+
+  const handleCancelSavings = () => {
+    setIsEditingSavings(false);
+    setTempSavings(savings); 
+  };
+
+  // Only allows for 2 decimal places
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+
+    if (/^\d*\.?\d{0,2}$/.test(value)) {
+      setTempSavings(value);
+    }
+  };
+
+  // Keybinds "Enter" key to trigger the "Save" key
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSaveSavings(); 
+    } else if (e.key === "Escape") {
+      handleCancelSavings(); 
+    }
+  };
+
+
+  // Format Card
   return (
-    <div className="p-4 h-full bg-white shadow-md rounded-md flex flex-col justify-between">
-      <div className="items-center flex justify-between">
-        <h1 className="text-lg md:text-xl lg:text-2xl" id="card-header">Savings:</h1>
-        <button className="bg-transparent border-none focus:outline-none" onClick={handleClick}>
-          <img
-            src="./summaryPage/editButton.png"
-            alt="Edit Button"
-            className="h-7 w-7 md:h-9 md:w-9 object-contain flex-shrink-0"
-          />
-        </button>
+    <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 h-[300px] w-[800px] flex flex-col justify-between">
+      <div>
+        <label className="block text-lg font-semibold text-gray-700 mb-3">
+          Savings:
+        </label>
+        {isEditingSavings ? (
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              value={tempSavings}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}  
+              className="flex-1 px-3 py-2 text-lg border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+            <button
+              onClick={handleSaveSavings}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancelSavings}
+              className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <span className="text-4xl font-bold text-gray-800">${savings}</span>
+            <button
+              onClick={handleEditSavings}
+              className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition"
+            >
+              <img
+                src="/summaryPage/editButton.png"
+                alt="Edit"
+                className="w-6 h-6"
+              />
+            </button>
+          </div>
+        )}
       </div>
-      <h2 className="text-3xl md:text-4xl 2xl:text-5xl font-bold p-2">${savings}</h2>
     </div>
   );
 }
