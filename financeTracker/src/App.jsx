@@ -8,6 +8,7 @@ import PersonalInfo from './pages/PersonalInfo';
 import Summary from './pages/Summary';
 import BudgetBot from './pages/Budgetbot'
 import ForgotPassword from './pages/ForgotPassword';
+import ScannerVision from './pages/ScannerVision';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path = '/summary' element = {<Summary/>}/>
           <Route path = '/budgetbot' element = {<BudgetBot/>}/>
           <Route path= '/forgot' element={<ForgotPassword />} />
+          <Route path = '/scanner'element ={<ScannerVision/>} />
         </Routes>
       </BrowserRouter>
     </div>

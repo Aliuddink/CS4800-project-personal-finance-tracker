@@ -44,7 +44,7 @@ const Scanner = (props) => {
     }, []);
 
     return (
-        <div id={qrcodeRegionId} />
+        <div id={qrcodeRegionId} className="text-black"/>
     );
 }
 
