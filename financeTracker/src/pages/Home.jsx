@@ -10,7 +10,7 @@ const Home = () => {
         {/* Logo and Company Name */}
         <div className="flex items-center space-x-3">
           <img src="/logoIcon.png" alt="Logo" className="w-10 h-10 object-contain" />
-          <span className="text-2xl font-bold">Finance Company</span>
+          <span className="text-2xl font-bold">BudgetBuddy</span>
         </div>
 
         {/* Navigation Links */}

@@ -36,7 +36,7 @@ function Login() {
             alt="Logo"
             className="w-12 h-12 object-cover rounded-full"
           />
-          <span className="ml-4 text-lg font-semibold text-white">Finance Name</span>
+          <span className="ml-4 text-lg font-semibold text-white">BudgetBuddy</span>
         </div>
       </header>
       <div className="flex justify-center items-center h-screen w-screen">
