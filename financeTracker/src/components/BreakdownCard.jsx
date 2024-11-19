@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { TableHeader, TableRow } from "./TableComponents";
 
 export default function BreakdownCard() {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [isAddItemOn, setIsAddItemOn] = React.useState(false);
   const [isDeleteItemOn, setIsDeleteItemOn] = React.useState(false);
+  const navigate = useNavigate();
   const [isAddItemDropdownOpen, setIsAddItemDropdownOpen] = React.useState(false);
   const [items, setItems] = React.useState([
     {
@@ -71,7 +73,7 @@ export default function BreakdownCard() {
 
   const handleScannerAdd = () => {
     setIsAddItemDropdownOpen(false);
-    console.log("Scanner option Clicked");
+    navigate("/scanner2");
   };
 
   const handleManualAdd = () => {
