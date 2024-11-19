@@ -17,7 +17,8 @@ const ScannerVision = (props) => {
                 <br />
                 <Html5QrcodePlugin
                     fps={10}
-                    qrbox={250}
+                    qrbox={300}
+                    aspectRatio={16 / 9}
                     disableFlip={false}
                     qrCodeSuccessCallback={onNewScanResult}
                 />

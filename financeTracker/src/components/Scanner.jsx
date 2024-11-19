@@ -31,6 +31,9 @@ const createConfig = (props) => {
     if (props.disableFlip !== undefined) {
         config.disableFlip = props.disableFlip;
     }
+
+    console.log("Formats to Support: ", config.formatsToSupport);
+    
     return config;
 };
 
