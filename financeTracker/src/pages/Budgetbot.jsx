@@ -1,53 +1,76 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const InputBox = () => {
-  const [inputValue, setInputValue] = useState('');
+const BudgetBot = () => {
+  const [inputValue, setInputValue] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
-  const genAI = new GoogleGenerativeAI('AIzaSyDzSTXab-1xDNFF56CxNjv8WxcPb8hgLzU');
+  const genAI = new GoogleGenerativeAI("AIzaSyDzSTXab-1xDNFF56CxNjv8WxcPb8hgLzU");
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  // Financial advising prompt
+  const advisingPrompt = `You are BudgetBot, a highly intelligent financial advisor. 
+  Your role is to help users with budgeting, saving, investing, and planning their finances effectively.
+  Always provide concise, actionable, and easy-to-understand advice tailored to the user's needs.`;
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
 
   const handleSubmit = async () => {
-    if (inputValue.trim() === '') return;
+    if (inputValue.trim() === "") return;
 
     // Add user input to chat history
-    setChatHistory([...chatHistory, { sender: 'User', text: inputValue }]);
-    setInputValue(''); // Clear input after submission
+    setChatHistory([...chatHistory, { sender: "User", text: inputValue }]);
+    setInputValue(""); // Clear input after submission
 
-    // Generate response from the AI
+    // Generate response from BudgetBot
     try {
-      const result = await model.generateContent(inputValue);
-      setChatHistory(prev => [...prev, { sender: 'AI', text: result.response.text() }]);
+      const result = await model.generateContent(advisingPrompt + "\nUser: " + inputValue);
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: "BudgetBot", text: result.response.text() },
+      ]);
     } catch (error) {
       console.error("Error generating response:", error);
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
-    <div style={{ maxWidth: '600px', margin: '50px auto', fontFamily: 'Arial, sans-serif' }}>
+    <div className="max-w-lg mx-auto mt-12 font-sans">
       {/* Title section */}
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-        <img 
-          src="botIcon.png" 
-          alt="Bot Icon" 
-          style={{ width: '50px', height: '50px', marginRight: '10px' }}
+      <div className="flex items-center mb-5">
+        <img
+          src="botIcon.png"
+          alt="Bot Icon"
+          className="w-12 h-12 mr-4"
         />
-        <h1 style={{ margin: 0, fontSize: '1.5rem' }}>BudgetBot</h1>
+        <h1 className="text-2xl font-semibold">BudgetBot</h1>
       </div>
 
       {/* Chat container */}
-      <div style={{ border: '1px solid #ddd', borderRadius: '10px', padding: '20px', backgroundColor: '#f9f9f9' }}>
-        <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
+      <div className="border border-gray-300 rounded-lg p-4 bg-gray-100">
+        <div className="max-h-96 overflow-y-auto mb-4">
           {chatHistory.map((message, index) => (
-            <div key={index} style={{ marginBottom: '15px' }}>
-              <div style={{ fontWeight: 'bold', color: message.sender === 'User' ? '#0078D4' : '#28a745' }}>
+            <div key={index} className="mb-4">
+              <div
+                className={`font-bold ${
+                  message.sender === "User" ? "text-blue-500" : "text-green-600"
+                }`}
+              >
                 {message.sender}:
               </div>
-              <div style={{ backgroundColor: message.sender === 'User' ? '#e0f7fa' : '#e8f5e9', padding: '10px', borderRadius: '8px', color: 'black' }}>
+              <div
+                className={`p-3 rounded-lg ${
+                  message.sender === "User" ? "bg-blue-100" : "bg-green-100"
+                } text-black`}
+              >
                 {message.text}
               </div>
             </div>
@@ -57,27 +80,13 @@ const InputBox = () => {
           type="text"
           value={inputValue}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
           placeholder="Type your message..."
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '5px',
-            border: '1px solid #ccc',
-            marginBottom: '10px',
-            color: 'black'
-          }}
+          className="w-full p-3 rounded-md border border-gray-300 mb-4 bg-white text-black"
         />
         <button
           onClick={handleSubmit}
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '5px',
-            border: 'none',
-            backgroundColor: '#1FC978',
-            color: '#fff',
-            cursor: 'pointer'
-          }}
+          className="w-full p-3 rounded-md bg-green-500 text-white cursor-pointer"
         >
           Send
         </button>
@@ -86,4 +95,4 @@ const InputBox = () => {
   );
 };
 
-export default InputBox;
+export default BudgetBot;
