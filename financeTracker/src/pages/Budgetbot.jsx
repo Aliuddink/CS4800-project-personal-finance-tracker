@@ -43,53 +43,55 @@ const BudgetBot = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-12 font-sans">
-      {/* Title section */}
-      <div className="flex items-center mb-5">
-        <img
-          src="botIcon.png"
-          alt="Bot Icon"
-          className="w-12 h-12 mr-4"
-        />
-        <h1 className="text-2xl font-semibold">BudgetBot</h1>
-      </div>
-
-      {/* Chat container */}
-      <div className="border border-gray-300 rounded-lg p-4 bg-gray-100">
-        <div className="max-h-96 overflow-y-auto mb-4">
-          {chatHistory.map((message, index) => (
-            <div key={index} className="mb-4">
-              <div
-                className={`font-bold ${
-                  message.sender === "User" ? "text-blue-500" : "text-green-600"
-                }`}
-              >
-                {message.sender}:
-              </div>
-              <div
-                className={`p-3 rounded-lg ${
-                  message.sender === "User" ? "bg-blue-100" : "bg-green-100"
-                } text-black`}
-              >
-                {message.text}
-              </div>
-            </div>
-          ))}
+    <div className="w-screen h-screen flex justify-center items-center font-sans">
+      <div className="w-full max-w-lg mx-auto p-6">
+        {/* Title section */}
+        <div className="flex flex-col items-center mb-5">
+          <img
+            src="botIcon.png"
+            alt="Bot Icon"
+            className="w-12 h-12 mr-4"
+          />
+          <h1 className="text-2xl font-semibold">BudgetBot</h1>
         </div>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your message..."
-          className="w-full p-3 rounded-md border border-gray-300 mb-4 bg-white text-black"
-        />
-        <button
-          onClick={handleSubmit}
-          className="w-full p-3 rounded-md bg-green-500 text-white cursor-pointer"
-        >
-          Send
-        </button>
+
+        {/* Chat container */}
+        <div className="border border-gray-300 rounded-lg p-4 bg-gray-100">
+          <div className="max-h-96 overflow-y-auto mb-4">
+            {chatHistory.map((message, index) => (
+              <div key={index} className="mb-4">
+                <div
+                  className={`font-bold ${
+                    message.sender === "User" ? "text-blue-500" : "text-green-600"
+                  }`}
+                >
+                  {message.sender}:
+                </div>
+                <div
+                  className={`p-3 rounded-lg ${
+                    message.sender === "User" ? "bg-blue-100" : "bg-green-100"
+                  } text-black`}
+                >
+                  {message.text}
+                </div>
+              </div>
+            ))}
+          </div>
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your message..."
+            className="w-full p-3 rounded-md border border-gray-300 mb-4 bg-white text-black"
+          />
+          <button
+            onClick={handleSubmit}
+            className="w-full p-3 rounded-md bg-green-500 text-white cursor-pointer"
+          >
+            Send
+          </button>
+        </div>
       </div>
     </div>
   );
