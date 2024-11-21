@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import React, { useState } from "react";
+import Sidebar from "../components/Sidebar"; // Import Sidebar
 
 const BudgetBot = () => {
   const [inputValue, setInputValue] = useState("");
@@ -43,8 +44,12 @@ const BudgetBot = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center font-sans">
-      <div className="w-full max-w-lg mx-auto p-6">
+    <div className="w-screen h-screen flex">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main content section */}
+      <div className="flex-1 p-6 pl-56"> {/* Add left padding to avoid overlap */}
         {/* Title section */}
         <div className="flex flex-col items-center mb-5">
           <img
