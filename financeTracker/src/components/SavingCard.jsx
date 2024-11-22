@@ -1,9 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-export default function SavingCard() {
+export default function SavingCard({totalSavings, updateTotalSavings}) {
   const [isEditingSavings, setIsEditingSavings] = useState(false);
-  const [savings, setSavings] = useState("1234.56");
-  const [tempSavings, setTempSavings] = useState(savings);
+  const [savings, setSavings] = useState(totalSavings);
+  const [tempSavings, setTempSavings] = useState(totalSavings);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/user", {
+          withCredentials: true,
+        });
+        setUserId(response.data.id);
+      } catch (error) {
+        console.error(
+          "DEBUG: Error fetching userId in SavingCard:",
+          error.response?.data || error.message
+        );
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+
+  useEffect(() => {
+    if (userId) {
+      fetchSavings(userId);
+    }
+  }, [userId]); 
+
+  const fetchSavings = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/savings/${userId}`,
+        { withCredentials: true }
+      );
+  
+      if (response.data.length > 0) {
+        const totalSavingsFromDB = response.data.reduce(
+          (sum, saving) => sum + parseFloat(saving.amount),
+          0
+        );
+        setSavings(totalSavingsFromDB.toFixed(2));
+        updateTotalSavings(totalSavingsFromDB - totalSavings); // Adjust only the difference
+      } else {
+        console.log("DEBUG: No savings found for this user.");
+        setSavings(0);
+        updateTotalSavings(-totalSavings); // Reset to 0
+      }
+    } catch (error) {
+      console.error(
+        "DEBUG: Error fetching savings:",
+        error.response?.data || error.message
+      );
+    }
+  };
+  
+
 
 // Allow for savings input
   const handleEditSavings = () => {
@@ -11,10 +67,34 @@ export default function SavingCard() {
     setTempSavings(savings); 
   };
 
-  const handleSaveSavings = () => {
-    setSavings(tempSavings);
-    setIsEditingSavings(false);
+
+  const handleSaveSavings = async () => {
+    try {
+
+
+      if (!userId) {
+        alert("User not logged in. Please log in to save savings.");
+        return;
+      }
+
+      // Save the savings to the backend
+      await axios.post(
+        "http://localhost:5000/api/savings",
+        { user_id: userId, amount: parseFloat(tempSavings) },
+        { withCredentials: true }
+      );
+
+      console.log("DEBUG: Savings saved successfully");
+
+      // Fetch the latest savings after saving
+      fetchSavings(userId);
+      setIsEditingSavings(false); // Exit edit mode
+    } catch (error) {
+      console.error("DEBUG: Error saving savings:", error.response?.data || error.message);
+      alert("Failed to save savings. Please try again.");
+    }
   };
+
 
   const handleCancelSavings = () => {
     setIsEditingSavings(false);
@@ -39,6 +119,9 @@ export default function SavingCard() {
     }
   };
 
+
+  
+  
 
   // Format Card
   return (
@@ -71,7 +154,7 @@ export default function SavingCard() {
           </div>
         ) : (
           <div className="flex items-center gap-4">
-            <span className="text-4xl font-bold text-gray-800">${savings}</span>
+            <span className="text-4xl font-bold text-gray-800">${totalSavings.toFixed(2)}</span>
             <button
               onClick={handleEditSavings}
               className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition"

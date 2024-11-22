@@ -1,6 +1,18 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../context/UserProvider";
 
 function PersonalInfo() {
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    setUser(null);
+
+    localStorage.removeItem("userToken"); 
+
+    
+    navigate("/home");
+  };
   return (
     <div className="flex h-screen w-screen bg-gray-100">
       {/* Sidebar */}
@@ -106,7 +118,9 @@ function PersonalInfo() {
             </div>
           </div>
 
-          <button className="bg-gray-500 text-white py-4 px-10 text-xl rounded-full mt-8 hover:bg-gray-600">
+          <button 
+            onClick={handleLogout}
+            className="bg-gray-500 text-white py-4 px-10 text-xl rounded-full mt-8 hover:bg-gray-600">
             Log Out
           </button>
         </section>

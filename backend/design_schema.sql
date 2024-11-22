@@ -44,3 +44,20 @@ CREATE TABLE savings (
     amount DECIMAL(10, 2) NOT NULL,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE summary (
+    id SERIAL PRIMARY KEY,              
+    title VARCHAR(255) NOT NULL,       
+    tag VARCHAR(100) NOT NULL,         
+    amount NUMERIC(10, 2) NOT NULL,    
+    date DATE NOT NULL,
+    type VARCHAR(20) NOT NULL,                  
+);
+
+
+
+ALTER TABLE summary
+ADD CONSTRAINT fk_summary_user
+FOREIGN KEY (user_id)
+REFERENCES users (id)
+ON DELETE CASCADE;

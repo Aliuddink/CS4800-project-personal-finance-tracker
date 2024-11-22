@@ -1,24 +1,143 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-export default function ExpenseCard() {
+
+export default function ExpenseCard({ totalExpenses, updateTotalExpenses }) {
   const [isEditingExpenses, setIsEditingExpenses] = useState(false);
-  const [expenses, setExpenses] = useState("1234.56");
-  const [tempExpenses, setTempExpenses] = useState(expenses);
+  const [expenses, setExpenses] = useState();
+  const [tempExpenses, setTempExpenses] = useState(totalExpenses);  
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/user", 
+        { withCredentials: true });
+        console.log("DEBUG: Fetched userId in ExpenseCard:", response.data.id);
+        setUserId(response.data.id);
+      } catch (error) {
+        console.error("DEBUG: Error fetching userId in ExpenseCard:", error.response?.data || error.message);
+      }
+    };
+  
+    fetchUserId();
+  }, []); 
+  
+  useEffect(() => {
+    if (userId) {
+      fetchExpenses(userId);
+    }
+  }, [userId]); 
+  
+  
+
+  const fetchExpenses = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/expenses/${userId}`,
+        { withCredentials: true }
+      );
+  
+      if (response.data.length > 0) {
+        const totalExpensesFromDB = response.data.reduce(
+          (sum, expense) => sum + parseFloat(expense.amount),
+          0
+        );
+        setExpenses(totalExpensesFromDB.toFixed(2));
+        updateTotalExpenses(totalExpensesFromDB - totalExpenses); // Adjust by the difference
+      } else {
+        console.log("DEBUG: No expenses found for this user.");
+        setExpenses(0);
+        updateTotalExpenses(-totalExpenses); // Reset totalExpenses to 0
+      }
+    } catch (error) {
+      console.error("DEBUG: Error fetching expenses:", error.response?.data || error.message);
+    }
+  };
+  
+
 
 // Allow for expenses input
   const handleEditExpenses = () => {
     setIsEditingExpenses(true);
-    setTempExpenses(expenses); 
+    setTempExpenses(expenses || 0); // Ensure it defaults to 0 if expenses is undefined
   };
 
-  const handleSaveExpenses = () => {
-    setExpenses(tempExpenses);
-    setIsEditingExpenses(false);
+  // const handleSaveExpenses = async () => {
+  //   try {
+  //     console.log("DEBUG: userId before saving expense:", userId);
+  //     const newExpense = parseFloat(tempExpenses);
+  //     console.log("DEBUG: newExpense before saving expense:", newExpense);
+  //     if (!userId) {
+  //       alert("User ID is not available. Please log in again.");
+  //       return;
+  //     }
+  
+  //     // Save the expense to the backend
+  //     await axios.post(
+  //       "http://localhost:5000/api/expenses",
+  //       {
+  //         user_id: userId,
+  //         amount: parseFloat(tempExpenses), // Convert string to a number
+  //         description: "Updated expenses for this month",
+  //       },
+  //       { withCredentials: true }
+  //     );
+  
+  //     console.log("DEBUG: Expense saved successfully");
+      
+  //     updateTotalExpenses(newExpense);
+  //     fetchExpenses(userId);
+
+  //     setIsEditingExpenses(false); // Exit editing mode
+  //   } catch (error) {
+  //     console.error("Error saving expenses:", error.response?.data || error.message);
+  //     alert("Failed to save expenses. Please try again.");
+  //   }
+  // };
+  
+  
+  const handleSaveExpenses = async () => {
+    try {
+      console.log("DEBUG: userId before saving expense:", userId);
+      const newExpense = parseFloat(tempExpenses);
+  
+      if (!userId) {
+        alert("User ID is not available. Please log in again.");
+        return;
+      }
+  
+      // Save the expense to the backend
+      await axios.post(
+        "http://localhost:5000/api/expenses",
+        {
+          user_id: userId,
+          amount: newExpense,
+          description: "Updated expenses for this month",
+        },
+        { withCredentials: true }
+      );
+  
+      console.log("DEBUG: Expense saved successfully");
+  
+      // Recalculate totalExpenses by fetching updated expenses
+      await fetchExpenses(userId);
+  
+      // Reset tempExpenses to avoid stale data
+      setTempExpenses(0);
+  
+      setIsEditingExpenses(false); // Exit editing mode
+    } catch (error) {
+      console.error("Error saving expenses:", error.response?.data || error.message);
+      alert("Failed to save expenses. Please try again.");
+    }
   };
+  
+  
 
   const handleCancelExpenses = () => {
     setIsEditingExpenses(false);
-    setTempExpenses(expenses); 
+    setTempExpenses(totalExpenses); 
   };
 
  // Only allows for 2 decimal places
@@ -70,7 +189,7 @@ export default function ExpenseCard() {
           </div>
         ) : (
           <div className="flex items-center gap-4">
-            <span className="text-4xl font-bold text-gray-800">${expenses}</span>
+            <span className="text-4xl font-bold text-gray-800">${totalExpenses.toFixed(2)}</span>
             <button
               onClick={handleEditExpenses}
               className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition"

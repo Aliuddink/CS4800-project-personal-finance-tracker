@@ -1,8 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, useNavigate  } from 'react-router-dom';
+import { UserContext } from "../context/UserProvider";
 
 const Home = () => {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+
   return (
+
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
       <nav className="bg-black shadow-md py-4 px-6 flex justify-between items-center">
@@ -15,10 +20,24 @@ const Home = () => {
 
         {/* Navigation Links */}
         <ul className="flex space-x-6">
-          <li><Link to="/" className="hover:text-[#1FC978]">Home</Link></li>
-          <li><Link to="/summary" className="hover:text-[#1FC978]">Summary</Link></li>
-          <li><Link to="/budgetbot" className="hover:text-[#1FC978]">BudgetBot</Link></li>
-          <li><Link to="/login" className="hover:text-[#1FC978]">Login</Link></li>
+          <li><Link to="/" className="hover:text-[#1FC978] text-white">Home</Link></li>
+          <li><Link to="/summary" className="hover:text-[#1FC978] text-white">Summary</Link></li>
+          <li><Link to="/budgetbot" className="hover:text-[#1FC978] text-white">BudgetBot</Link></li>
+          {user ? (
+            <li
+              className="px-4 bg-green-500 text-white rounded-full shadow-md hover:bg-green-700 transition duration-300 cursor-pointer"
+              title="Go to Profile"
+              onClick={() => navigate("/personal-info")} 
+            >
+              {user}
+            </li> // Display username with rounded border and hover effect
+          ) : (
+            <li>
+              <Link to="/login" className="hover:text-[#1FC978] text-white">
+                Login
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
 
