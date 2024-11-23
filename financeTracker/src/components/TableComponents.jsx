@@ -1,5 +1,5 @@
 import React from 'react';
-
+import axios from 'axios';
 // TableHeader Component
 export function TableHeader() {
   return (
@@ -25,6 +25,8 @@ export function TableHeader() {
 // TableRow Component
 // Usage: <TableRow title="Chipotle" tagName="food" savings="$724.47" date="09/19/2024" />
 export function TableRow({ title, tagName, amount, date, type, isDeleteOn, onDelete }) {
+
+  
   return (
     <tr className='text-center divide-x divide-neutral-400'>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
@@ -54,7 +56,8 @@ export function TableRow({ title, tagName, amount, date, type, isDeleteOn, onDel
 // Usage: <TableTag tagName="food" />
 export function TableTag({ tagName }) {
     let color = '';
-    switch (tagName.toUpperCase()) {
+    const tag = tagName.toUpperCase();
+    switch (tag) {
         case 'FOOD':
             color = 'bg-cyan-400';
             break;
@@ -82,7 +85,7 @@ export function TableTag({ tagName }) {
 
     return (
       <div className={`text-center py-0.5 px-3 w-full object-contain flex-shrink-0 text-black ${color} truncate`}>
-      {tagName.toUpperCase()}
+      {tag}
       </div>
     );
 }

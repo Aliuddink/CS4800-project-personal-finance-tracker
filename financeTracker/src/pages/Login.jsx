@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from "../context/UserProvider";
 import axios from 'axios';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  
-  const navigate = useNavigate(); 
-
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate(); // For navigation after login
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/login', {
-        username,
-        password,
-      });
+      console.log("DEBUG: Sending login request with:", { username, password });
+      const response = await axios.post(
+        "http://localhost:5000/login",
+        {
+          username,
+          password,
+        },
+        { withCredentials: true } // Important for session-based authentication
+      );
 
       if (response.status === 200) {
-        navigate('/home');
+        setUser(username);
+        navigate('/home'); // Redirect to the dashboard or home page
       }
     } catch (error) {
-      console.error("Error logging in:", error);
-      alert(error.response?.data?.message || "Login failed");
+      console.error("Login failed:", error.response?.data || error.message);
+      setErrorMessage(error.response?.data?.message || "Login failed. Please try again.");
     }
   };
 

@@ -1,50 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableHeader, TableRow } from "./TableComponents";
+import axios from "axios";
 
-export default function BreakdownCard() {
+export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings }) {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [isAddItemOn, setIsAddItemOn] = React.useState(false);
   const [isDeleteItemOn, setIsDeleteItemOn] = React.useState(false);
+  const [isScannerActive, setIsScannerActive] = useState(false);
+  const [userId, setUserId] = useState(null); 
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [isAddItemDropdownOpen, setIsAddItemDropdownOpen] = React.useState(false);
-  const [items, setItems] = React.useState([
-    {
-      title: "Chipotle",
-      tagName: "food",
-      amount: "13.47",
-      date: "2024-09-19",
-      type: "Expense",
-    },
-    {
-      title: "Housing",
-      tagName: "rent",
-      amount: "734.56",
-      date: "2024-09-12",
-      type: "Expense",
-    },
-    {
-      title: "Electricity",
-      tagName: "utilities",
-      amount: "100.00",
-      date: "2024-09-01",
-      type: "Expense",
-    },
-    {
-      title: "Bus Pass",
-      tagName: "transportation",
-      amount: "50.00",
-      date: "2024-09-01",
-      type: "Expense",
-    },
-    {
-      title: "Salary",
-      tagName: "earnings",
-      amount: "2000.00",
-      date: "2024-09-01",
-      type: "Earnings",
-    },
-  ]);
+ 
 
   const [newItem, setNewItem] = React.useState({
     title: "",
@@ -64,20 +33,107 @@ export default function BreakdownCard() {
     "Other",
   ];
 
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/user", { withCredentials: true });
+        console.log("DEBUG: Fetched userId in BreakdownCard:", response.data.id);
+        setUserId(response.data.id); 
+      } catch (error) {
+        console.error("DEBUG: Error fetching userId in BreakdownCard:", error.response?.data || error.message);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/summary", {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        const mappedItems = response.data.map((item) => ({
+          ...item,
+          tagName: item.tag, // Map `tag` to `tagName`
+        }));
+        setItems(mappedItems);
+        setIsLoading(false);
+      } else {
+        console.error("DEBUG: No summary data found:", response.data.message);
+        setItems([]);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error("DEBUG: Error fetching items:", error.response?.data || error.message);
+      setIsLoading(false);
+    }
+  };
+  
+  
+  useEffect(() => {
+    if (userId) {
+      fetchItems();
+    } else {
+      console.error("DEBUG: User ID is null, skipping fetchItems.");
+    }
+  }, [userId]);
+  
+
+  const handleSaveSummary = async (item) => {
+    if (!userId) {
+      console.error("DEBUG: Cannot save item, userId is null.");
+      alert("User is not logged in. Please log in to save items.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/summary",
+        {
+          user_id: userId, // Send userId to associate the item with the current user
+          title: item.title,
+          tag: item.tagName,
+          amount: item.amount,
+          date: item.date,
+          type: item.type,
+        },
+        { withCredentials: true }
+      );
+
+      if (response.status === 201) {
+        console.log("DEBUG: Item saved to database successfully:", response.data);
+        await fetchItems();
+        if (item.type === "Expense") {
+          updateTotalExpenses(parseFloat(item.amount));
+        } else if (item.type === "Earnings") {
+          updateTotalSavings(parseFloat(item.amount));
+        }
+
+      }
+    } catch (error) {
+      console.error("DEBUG: Error saving item to database:", error.response?.data || error.message);
+      alert("Failed to save item. Please try again.");
+    }
+  };
+
   const [errors, setErrors] = React.useState({});
 
   // Add Item Logic (Manually)----------------------------------------------
+
   const handleAddItemButtonClick = () => {
     setIsAddItemDropdownOpen(true);
   };
 
   const handleScannerAdd = () => {
     setIsAddItemDropdownOpen(false);
+    setIsScannerActive(true);
     navigate("/scanner2");
   };
 
   const handleManualAdd = () => {
     setIsAddItemDropdownOpen(false);
+    setIsScannerActive(false);
     setIsAddItemOn(!isAddItemOn);
   };
 
@@ -117,13 +173,14 @@ export default function BreakdownCard() {
     validateFields(name, value);
   };
 
-  const handleAddNewItem = () => {
+  const handleAddNewItem = async () => {
     const isValid = Object.keys(newItem).every(
-      (key) => !errors[key] && newItem[key].trim()
+      (key) => newItem[key] && newItem[key].trim() !== ""
     );
 
     if (isValid) {
       setItems((prevItems) => [...prevItems, newItem]);
+      await handleSaveSummary(newItem); // Save the item to the database
       setNewItem({
         title: "",
         tagName: "",
@@ -132,11 +189,8 @@ export default function BreakdownCard() {
         type: "Expense",
       });
       setIsAddItemOn(false);
-      setErrors({});
     } else {
-      alert(
-        "The input box is empty or invalid. Please fill in the correct information."
-      );
+      alert("Please fill in all fields.");
     }
   };
 
@@ -145,9 +199,37 @@ export default function BreakdownCard() {
     setIsDeleteItemOn(!isDeleteItemOn);
   };
 
-  const handleDeleteItem = (index) => {
-    setItems((prevItems) => prevItems.filter((_, i) => i !== index));
+  const handleDeleteItem = async (id, amount, type) => {
+    try {
+      console.log("DEBUG: Deleting item with id:", id, "amount:", amount, "type:", type);
+      const parsedAmount = parseFloat(amount);
+      if (isNaN(parsedAmount)) {
+        console.error("DEBUG: Invalid amount parsed in handleDeleteItem:", amount);
+        return;
+      }
+      console.log("DEBUG: Parsed amount:", parsedAmount);
+  
+      await axios.delete(`http://localhost:5000/api/summary/${id}`, { withCredentials: true });
+  
+      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  
+      if (type === "Expense") {
+        console.log("DEBUG: Calling updateTotalExpenses");
+        updateTotalExpenses(-parsedAmount); // Pass parsedAmount here
+      } else if (type === "Earnings") {
+        updateTotalSavings(-parsedAmount);
+      }
+      console.log("DEBUG: Item deleted successfully and totals updated");
+    } catch (error) {
+      console.error("DEBUG: Error deleting item:", error.response?.data || error.message);
+      alert("Failed to delete item. Please try again.");
+    }
   };
+  
+  
+  
+  
+  
 
   // Sort Logic-----------------------------------------------------
   const handleSortLogic = (type) => {
@@ -276,7 +358,7 @@ export default function BreakdownCard() {
                 date={item.date}
                 type={item.type}
                 isDeleteOn={isDeleteItemOn}
-                onDelete={() => handleDeleteItem(index)}
+                onDelete={() => handleDeleteItem(item.id, item.amount, item.type)}
               />
             ))}
 
@@ -357,7 +439,16 @@ export default function BreakdownCard() {
                     </button>
                   ) : (
                     <button
-                      onClick={handleAddNewItem}
+                      onClick={async () => {
+                        const isValid = Object.keys(newItem).every(
+                          (key) => newItem[key].trim() !== ""
+                        );
+                        if (isValid) {
+                          await handleAddNewItem(); 
+                        }else{
+                          alert("Please fill in all fields");
+                        }
+                      }}
                       className="bg-green-500 text-white px-4 py-1 w-[8vw] rounded-md"
                     >
                       Add

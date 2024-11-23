@@ -3,40 +3,104 @@ import { Container, Center, Text, Box, Button, Image, VStack, HStack, Divider, L
 import axios from 'axios';
 import { useState } from 'react';
 import { AttachmentIcon } from '@chakra-ui/icons'
+import { ExpensesContext } from "../context/ExpensesProvider";
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function ReadWords() {
+    const { updateTotalExpenses } = useContext(ExpensesContext);
     const [res, setRes] = useState();
-
     const [file, setFile] = useState();
     const [isUploading, setIsUploading] = useState(false);
+    const navigate = useNavigate();
+
     const handleUploadFile = (evt) => {
         setFile(
             evt.target.files[0],
         )
     }
     const submitPhoto = async () => {
-        if (!file) { return; }
-        setIsUploading(true)
-        const data = new FormData()
-        data.append('file', file)
+        if (!file) {
+            alert("Please upload a receipt image.");
+            return;
+        }
     
-        let url = "https://api.taggun.io/api/receipt/v1/verbose/file";
+        setIsUploading(true);
+    
+        const data = new FormData();
+        data.append('file', file);
+    
+        const url = "https://api.taggun.io/api/receipt/v1/verbose/file";
     
         try {
-            const res = await axios.post(url, data, {
+            // Fetch the current user's ID
+            const userResponse = await axios.get("http://localhost:5000/api/user", {
+                withCredentials: true,
+            });
+    
+            const user_id = userResponse.data.id;
+    
+            if (!user_id) {
+                alert("User ID not found. Please log in again.");
+                return;
+            }
+    
+            const taggunResponse = await axios.post(url, data, {
                 headers: {
-                'Content-Type': 'multipart/form-data',
-                'apikey': import.meta.env.VITE_TAGGUN_API_KEY
+                    'Content-Type': 'multipart/form-data',
+                    'apikey': import.meta.env.VITE_TAGGUN_API_KEY,
+                },
+            });
+    
+            console.log("Taggun API Response:", taggunResponse);
+    
+            // Extract relevant data from the API response
+            const receiptData = {
+                user_id, // Add user_id to the payload
+                title: taggunResponse.data.merchantName?.data || "Unknown Merchant",
+                date: taggunResponse.data.date?.data || new Date().toISOString(),
+                amount: parseFloat(taggunResponse.data.paidAmount?.data) || 0,
+                type: "Expense", // Set to Expense by default
+            };
+    
+            if (!receiptData.amount || !receiptData.title || !receiptData.user_id) {
+                console.error("Invalid receipt data:", receiptData);
+                alert("Invalid receipt data. Please check the receipt and try again.");
+                return;
+            }
+    
+            console.log("Receipt Data to Store:", receiptData);
+    
+            // Save the extracted data to the summary table via backend
+            const backendResponse = await axios.post(
+                "http://localhost:5000/api/summary/receipt",
+                receiptData,
+                {
+                    withCredentials: true,
                 }
-            })
-            
-            console.log(res)
-            setRes(res)
+            );
+    
+            console.log("Backend Response:", backendResponse);
+    
+            // Update the total expenses dynamically
+            if (receiptData.type === "Expense") {
+                console.log("Updating total expenses with receipt:", receiptData.amount);
+                updateTotalExpenses(receiptData.amount); // Dynamically update totalExpenses
+            }
+    
+            alert("Receipt data saved successfully!");
+            setRes(taggunResponse); // Store the full response for display if needed
+            navigate("/summary");
+        } catch (error) {
+            console.error("Error analyzing receipt or saving data:", error.response?.data || error.message);
+            alert("Failed to analyze receipt or save data. Please try again.");
+        } finally {
             setIsUploading(false);
-        } catch (e) {
-            console.error(e);
         }
-    }
+    };
+    
+    
+    
     return (
         <Container>
             <Box height="100vh" mt="30vh">

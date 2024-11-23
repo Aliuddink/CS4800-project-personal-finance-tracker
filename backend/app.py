@@ -1,14 +1,29 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
+from flask_session import Session
 from db_connector import test_db_connection
 import db_connector
 import send_email
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
+
+# Configure Flask session
+app.secret_key = "1234"  # Replace with a strong secret key
+app.config["SESSION_TYPE"] = "filesystem"  # Store session data in the file system
+app.config["SESSION_PERMANENT"] = False    # Session resets after the browser is closed
+Session(app)
 
 # Configure email service
 send_email.configure_mail(app)
+
+def log_current_session():
+    user_id = session.get('user_id')
+    if user_id:
+        print(f"DEBUG: Current user logged in with ID: {user_id}")
+    else:
+        print("DEBUG: No user currently logged in.")
+
 
 # User registration
 @app.route('/register', methods=['POST'])
@@ -31,12 +46,33 @@ def login_user():
     data = request.json
     username = data['username']
     password = data['password']
+    print(f"DEBUG: Received login request for username: {username}")
+    print(f"DEBUG: Received login request for password: {password}")
 
+
+    # Authenticate user
     user = db_connector.login_user(username, password)
     if user:
+        session['user_id'] = user[0]  # Store user ID in session
+        print(f"DEBUG: User '{username}' logged in with ID: {user[0]}")
         return jsonify({'message': 'Login successful'}), 200
     else:
+        print("DEBUG: Login failed for username:", username)
         return jsonify({'message': 'Invalid credentials'}), 401
+
+# Logout
+@app.route('/logout', methods=['POST'])
+def logout_user():
+    user_id = session.get('user_id')
+    if user_id:
+        print(f"DEBUG: User with ID {user_id} is logging out.")
+    else:
+        print("DEBUG: No user is logged in but logout was called.")
+    session.clear()  # Clear the session
+    return jsonify({"message": "Logout successful"}), 200
+
+
+
 
 # Request password reset
 @app.route('/request-reset', methods=['POST'])
@@ -77,12 +113,69 @@ def get_expenses(user_id):
         {
             "id": row[0],
             "user_id": row[1],
-            "category_id": row[2],
-            "amount": row[3],
-            "description": row[4],
-            "date": row[5]
+            # "category_id": row[2],
+            "amount": row[2],
+            "description": row[3],
+            "date": row[4]
         } for row in expenses
     ])
+
+
+# Get current user
+@app.route('/api/user', methods=['GET'])
+def get_current_user():
+
+    log_current_session()  # Log current session details
+
+    user_id = session.get('user_id')  # Retrieve user_id from session
+    if not user_id:
+        print("DEBUG: Attempt to fetch user but no user is logged in.")
+        return jsonify({"message": "User not logged in"}), 401
+
+    # Query the database for the user
+    conn = db_connector.get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, email FROM users WHERE id = %s", (user_id,))
+    user = cursor.fetchone()
+    conn.close()
+
+    if user:
+        print(f"DEBUG: Retrieved user from database: {user}")
+        return jsonify({
+            "id": user[0],
+            "username": user[1],
+            "email": user[2]
+        }), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
+    
+# Get summary data
+@app.route('/api/summary', methods=['GET'])
+def get_summary():
+    conn = db_connector.get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM summary ORDER BY date DESC")
+    rows = cursor.fetchall()
+    conn.close()
+
+    if not rows:
+        return jsonify({"message": "No summary data found"}), 404
+
+    summary_data = [
+        {
+            "id": row[0],
+            "title": row[1],
+            "tag": row[2],
+            "amount": row[3],
+            "date": row[4].strftime('%Y-%m-%d'),
+            "type": row[5]
+        } for row in rows
+    ]
+    return jsonify(summary_data), 200
+
+
+
+
 
 # Fetch all savings for a user
 @app.route('/api/savings/<int:user_id>', methods=['GET'])
@@ -111,15 +204,22 @@ def get_savings(user_id):
 def add_expense():
     data = request.json
     user_id = data['user_id']
-    category_id = data['category_id']
     amount = data['amount']
-    description = data['description']
+    description = data.get('description', '')
 
+    # Check if user exists
     conn = db_connector.get_db_connection()
     cursor = conn.cursor()
+    cursor.execute("SELECT id FROM users WHERE id = %s", (user_id,))
+    user = cursor.fetchone()
+    if not user:
+        conn.close()
+        return jsonify({"message": "User not found"}), 404
+
+    # Insert the expense
     cursor.execute(
-        "INSERT INTO expenses (user_id, category_id, amount, description) VALUES (%s, %s, %s, %s) RETURNING id",
-        (user_id, category_id, amount, description)
+        "INSERT INTO expenses (user_id, amount, description) VALUES (%s, %s, %s) RETURNING id",
+        (user_id, amount, description)
     )
     expense_id = cursor.fetchone()[0]
     conn.commit()
@@ -127,19 +227,222 @@ def add_expense():
 
     return jsonify({"message": "Expense added successfully", "expense_id": expense_id}), 201
 
+# Add new savings
+@app.route('/api/savings', methods=['POST'])
+def add_savings():
+
+    user_id = session.get('user_id')  
+    if not user_id:
+        return jsonify({"message": "User not logged in"}), 401
+
+    data = request.json
+    amount = data.get('amount')
+    goal_id = data.get('goal_id') # Optional goal_id
+
+    if not amount:
+        return jsonify({"message": "Savings amount is required"}), 400
+
+    try:
+        conn = db_connector.get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO savings (user_id, goal_id, amount) VALUES (%s, %s, %s) RETURNING id",
+            (user_id, goal_id, amount)
+        )
+        savings_id = cursor.fetchone()[0]
+        conn.commit()
+        return jsonify({"message": "Savings added successfully", "savings_id": savings_id}), 201
+    except Exception as e:
+        print(f"DEBUG: Error while saving savings: {e}")
+        return jsonify({"message": "Failed to add savings"}), 500
+    finally:
+        conn.close()
+
+
+
+@app.route('/api/summary/receipt', methods=['POST'])
+def add_receipt():
+    data = request.json
+    print("DEBUG: Received data for receipt:", data)  # Debug log
+
+    try:
+        # Extract data from the request
+        user_id = data.get('user_id')
+        title = data.get('title', 'Unknown Merchant')
+        date = data.get('date')
+        amount = data.get('amount')
+        type = data.get('type', 'Expense')  # Default type is "Expense"
+        tag = data.get('tag', 'Other')  # Default tag is "Other"
+
+        # Validate required fields
+        if not all([user_id, title, date, amount]):
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Insert the receipt data into the summary table
+        conn = db_connector.get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO summary (user_id, title, amount, date, type, tag)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (user_id, title, amount, date, type, tag))
+
+        # If the type is Expense, also insert into the expenses table
+        if type == 'Expense':
+            cursor.execute("""
+                INSERT INTO expenses (user_id, description, amount, date)
+                VALUES (%s, %s, %s, %s)
+            """, (user_id, title, amount, date))
+
+        conn.commit()
+        conn.close()
+
+        print("DEBUG: Receipt and Expense added successfully")
+        return jsonify({"message": "Receipt entry added successfully"}), 201
+
+    except Exception as e:
+        print("DEBUG: Error in adding receipt:", str(e))
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+# Add new summary entry
+@app.route('/api/summary', methods=['POST'])
+def add_summary():
+    data = request.json
+    user_id = data.get('user_id')
+    title = data.get('title')
+    tag = data.get('tag')
+    amount = data.get('amount')
+    date = data.get('date')
+    type = data['type']
+
+    if not title or not tag or not amount or not date:
+        return jsonify({"message": "All fields are required"}), 400
+
+    conn = db_connector.get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO summary (user_id, title, tag, amount, date, type) VALUES (%s,%s, %s, %s, %s, %s) RETURNING id",
+        (user_id, title, tag, amount, date, type)
+    )
+    summary_id = cursor.fetchone()[0]
+
+    if type == "Expense":
+        cursor.execute(
+            """
+            INSERT INTO expenses (user_id, amount, description, date)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (user_id, amount, title, date)
+        )
+    if type == "Earnings":
+        cursor.execute(
+            """
+            INSERT INTO savings (user_id, amount, date)
+            VALUES (%s, %s, %s)
+            """,
+            (user_id, amount, date)
+        )
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Summary entry added successfully", "id": summary_id}), 201
+
+
+@app.route('/api/summary/<int:summary_id>', methods=['PUT'])
+def update_summary(summary_id):
+    data = request.json
+    title = data.get('title')
+    tag = data.get('tag')
+    amount = data.get('amount')
+    date = data.get('date')
+
+    if not title or not tag or not amount or not date:
+        return jsonify({"message": "All fields are required"}), 400
+
+    conn = db_connector.get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE summary SET title = %s, tag = %s, amount = %s, date = %s WHERE id = %s",
+        (title, tag, amount, date, summary_id)
+    )
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Summary entry updated successfully"}), 200
+
+# Delete summary entry
+@app.route('/api/summary/<int:summary_id>', methods=['DELETE'])
+def delete_summary(summary_id):
+    conn = db_connector.get_db_connection()
+    cursor = conn.cursor()
+
+    # Check if the item exists in the summary table
+    cursor.execute("SELECT id, title, tag, amount, date, type, user_id FROM summary WHERE id = %s", (summary_id,))
+    summary_item = cursor.fetchone()
+
+    if not summary_item:
+        conn.close()
+        return jsonify({"message": "Item not found"}), 404
+
+    # Delete from `expenses` or `savings` if applicable
+    if summary_item[5] == "Expense":  # Assuming `type` is "Expense"
+        cursor.execute(
+            """
+            DELETE FROM expenses 
+            WHERE ctid = (
+                SELECT ctid 
+                FROM expenses 
+                WHERE description = %s AND user_id = %s
+                ORDER BY ctid
+                LIMIT 1
+            )
+            """,
+            (summary_item[1], summary_item[6])
+        )
+    elif summary_item[5] == "Earnings":  # Assuming `type` is "Earning"
+        cursor.execute(
+            """
+            DELETE FROM savings 
+            WHERE ctid = (
+                SELECT ctid 
+                FROM savings 
+                WHERE user_id = %s AND amount = %s
+                ORDER BY ctid
+                LIMIT 1
+            )
+            """,
+            (summary_item[6], summary_item[3])
+        )
+
+    # Delete from `summary` table
+    cursor.execute("DELETE FROM summary WHERE id = %s", (summary_id,))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Item deleted successfully"}), 200
+
+
+
+
+
+
+
 # Update an expense
 @app.route('/api/expenses/<int:expense_id>', methods=['PUT'])
 def update_expense(expense_id):
     data = request.json
-    category_id = data.get('category_id')
     amount = data.get('amount')
     description = data.get('description')
 
     conn = db_connector.get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE expenses SET category_id = %s, amount = %s, description = %s WHERE id = %s",
-        (category_id, amount, description, expense_id)
+        "UPDATE expenses SET amount = %s, description = %s WHERE id = %s",
+        (amount, description, expense_id)
     )
     conn.commit()
     conn.close()
@@ -157,73 +460,7 @@ def delete_expense(expense_id):
 
     return jsonify({"message": "Expense deleted successfully"}), 200
 
-# Fetch all categories
-@app.route('/api/categories', methods=['GET'])
-def get_categories():
-    conn = db_connector.get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM categories")
-    categories = cursor.fetchall()
-    conn.close()
 
-    return jsonify([{"id": row[0], "name": row[1]} for row in categories])
-
-# Add a new category
-@app.route('/api/categories', methods=['POST'])
-def add_category():
-    data = request.json
-    category_name = data.get('name')
-
-    conn = db_connector.get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO categories (name) VALUES (%s) RETURNING id", (category_name,))
-    category_id = cursor.fetchone()[0]
-    conn.commit()
-    conn.close()
-
-    return jsonify({"message": "Category added successfully", "category_id": category_id}), 201
-
-@app.route('/api/expenses/filter', methods=['GET'])
-def filter_expenses():
-    user_id = request.args.get('user_id')
-    sort_by = request.args.get('sort_by', 'date')  # Default sorting by date
-    order = request.args.get('order', 'desc')  # Default order descending
-
-    # Map sort_by options to actual database columns
-    sort_options = {
-        'amount': 'amount',
-        'category': 'category_id',
-        'date': 'date'
-    }
-    sort_column = sort_options.get(sort_by, 'date')  # Fallback to 'date' if sort_by is invalid
-
-    # Ensure the order is either 'asc' or 'desc'
-    order = 'asc' if order == 'asc' else 'desc'
-
-    # Build the SQL query
-    query = f"SELECT * FROM expenses WHERE user_id = %s ORDER BY {sort_column} {order}"
-    
-    # Execute the query
-    conn = db_connector.get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute(query, (user_id,))
-    expenses = cursor.fetchall()
-    conn.close()
-
-    # Format the response
-    if not expenses:
-        return jsonify({'message': 'No expenses found for this user'}), 404
-
-    return jsonify([
-        {
-            "id": row[0],
-            "user_id": row[1],
-            "category_id": row[2],
-            "amount": row[3],
-            "description": row[4],
-            "date": row[5]
-        } for row in expenses
-    ])
 
 if __name__ == '__main__':
     test_db_connection()
