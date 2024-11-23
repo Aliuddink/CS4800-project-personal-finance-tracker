@@ -8,12 +8,12 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
   const [isAddItemOn, setIsAddItemOn] = React.useState(false);
   const [isDeleteItemOn, setIsDeleteItemOn] = React.useState(false);
   const [isScannerActive, setIsScannerActive] = useState(false);
-  const [userId, setUserId] = useState(null); 
+  const [userId, setUserId] = useState(null);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [isAddItemDropdownOpen, setIsAddItemDropdownOpen] = React.useState(false);
- 
+
 
   const [newItem, setNewItem] = React.useState({
     title: "",
@@ -30,6 +30,7 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
     "Transportation",
     "Healthcare",
     "Leisure",
+    "Paycheck",
     "Other",
   ];
 
@@ -38,7 +39,7 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
       try {
         const response = await axios.get("http://localhost:5000/api/user", { withCredentials: true });
         console.log("DEBUG: Fetched userId in BreakdownCard:", response.data.id);
-        setUserId(response.data.id); 
+        setUserId(response.data.id);
       } catch (error) {
         console.error("DEBUG: Error fetching userId in BreakdownCard:", error.response?.data || error.message);
       }
@@ -69,8 +70,8 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
       setIsLoading(false);
     }
   };
-  
-  
+
+
   useEffect(() => {
     if (userId) {
       fetchItems();
@@ -78,7 +79,7 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
       console.error("DEBUG: User ID is null, skipping fetchItems.");
     }
   }, [userId]);
-  
+
 
   const handleSaveSummary = async (item) => {
     if (!userId) {
@@ -208,11 +209,11 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
         return;
       }
       console.log("DEBUG: Parsed amount:", parsedAmount);
-  
+
       await axios.delete(`http://localhost:5000/api/summary/${id}`, { withCredentials: true });
-  
+
       setItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  
+
       if (type === "Expense") {
         console.log("DEBUG: Calling updateTotalExpenses");
         updateTotalExpenses(-parsedAmount); // Pass parsedAmount here
@@ -225,11 +226,6 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
       alert("Failed to delete item. Please try again.");
     }
   };
-  
-  
-  
-  
-  
 
   // Sort Logic-----------------------------------------------------
   const handleSortLogic = (type) => {
@@ -381,13 +377,23 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
                     className="w-full bg-white h-8 px-2 border border-gray-300 text-center"
                     value={newItem.tagName}
                     onChange={handleNewItemChange}
+                    disabled={newItem.type === "Expense" && newItem.tagName === "Paycheck"}
                   >
                     <option value="">Select Tag</option>
-                    {predefinedTags.map((tag, index) => (
-                      <option key={index} value={tag.toUpperCase()}>
-                        {tag}
-                      </option>
-                    ))}
+                    {predefinedTags
+                      .filter(tag => {
+                        if (newItem.type === "Expense") {
+                          return tag !== "Paycheck";  // Disable "Paycheck" for Expense type
+                        } else if (newItem.type === "Earnings") {
+                          return tag === "Paycheck" || tag === "Other"; // Allow "Paycheck" and "Other" for Earnings type
+                        }
+                        return true;  // Allow all tags if no type is selected
+                      })
+                      .map((tag, index) => (
+                        <option key={index} value={tag.toUpperCase()}>
+                          {tag}
+                        </option>
+                      ))}
                   </select>
                 </td>
                 <td className="">
@@ -444,8 +450,8 @@ export default function BreakdownCard({ updateTotalExpenses, updateTotalSavings 
                           (key) => newItem[key].trim() !== ""
                         );
                         if (isValid) {
-                          await handleAddNewItem(); 
-                        }else{
+                          await handleAddNewItem();
+                        } else {
                           alert("Please fill in all fields");
                         }
                       }}
