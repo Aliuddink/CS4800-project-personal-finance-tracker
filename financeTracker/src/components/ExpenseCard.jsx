@@ -43,6 +43,8 @@ export default function ExpenseCard({ totalExpenses, updateTotalExpenses }) {
           (sum, expense) => sum + parseFloat(expense.amount),
           0
         );
+        console.log('--------')
+        console.log(totalExpensesFromDB.toFixed(2))
         setExpenses(totalExpensesFromDB.toFixed(2));
         updateTotalExpenses(totalExpensesFromDB - totalExpenses); // Adjust by the difference
       } else {
@@ -101,12 +103,11 @@ export default function ExpenseCard({ totalExpenses, updateTotalExpenses }) {
     try {
       console.log("DEBUG: userId before saving expense:", userId);
       const newExpense = parseFloat(tempExpenses);
-  
       if (!userId) {
         alert("User ID is not available. Please log in again.");
         return;
       }
-  
+      
       // Save the expense to the backend
       await axios.post(
         "http://localhost:5000/api/expenses",
@@ -117,7 +118,7 @@ export default function ExpenseCard({ totalExpenses, updateTotalExpenses }) {
         },
         { withCredentials: true }
       );
-  
+      
       console.log("DEBUG: Expense saved successfully");
   
       // Recalculate totalExpenses by fetching updated expenses

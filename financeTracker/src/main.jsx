@@ -5,8 +5,6 @@ import './index.css'
 import {SaasProvider} from '@saas-ui/react'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-   
       <App />
- 
   </StrictMode>,
 )

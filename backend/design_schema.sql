@@ -13,11 +13,11 @@ CREATE TABLE categories (
 
 CREATE TABLE expenses (
     id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id),
-    category_id INT REFERENCES categories(id),
-    amount DECIMAL(10, 2) NOT NULL,
+    user_id INT NOT NULL,
+    amount NUMERIC(10, 2) NOT NULL,
     description VARCHAR(255),
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE savings (
@@ -46,18 +46,14 @@ CREATE TABLE savings (
 );
 
 CREATE TABLE summary (
-    id SERIAL PRIMARY KEY,              
-    title VARCHAR(255) NOT NULL,       
-    tag VARCHAR(100) NOT NULL,         
-    amount NUMERIC(10, 2) NOT NULL,    
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    tag VARCHAR(100) NOT NULL,
+    amount NUMERIC(10, 2) NOT NULL,
     date DATE NOT NULL,
-    type VARCHAR(20) NOT NULL,                  
+    type VARCHAR(20) NOT NULL,
+    user_id INTEGER NOT NULL,
+
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) 
+        ON DELETE CASCADE
 );
-
-
-
-ALTER TABLE summary
-ADD CONSTRAINT fk_summary_user
-FOREIGN KEY (user_id)
-REFERENCES users (id)
-ON DELETE CASCADE;
