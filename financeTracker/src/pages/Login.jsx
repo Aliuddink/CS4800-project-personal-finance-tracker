@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from "../context/UserProvider";
 import axios from 'axios';
@@ -8,7 +8,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate(); // For navigation after login
-  const [errorMessage, setErrorMessage] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async () => {
     try {
@@ -31,8 +31,6 @@ function Login() {
       setErrorMessage(error.response?.data?.message || "Login failed. Please try again.");
     }
   };
-
-
 
   return (
     <>
@@ -60,7 +58,7 @@ function Login() {
           </div>
 
           {/* White Box */}
-          <div className="bg-white w-full max-w-2xl h-96 p-12 rounded-lg shadow-lg z-10 relative">
+          <div className="bg-white w-full max-w-2xl h-[450px] p-12 rounded-lg shadow-lg z-10 relative">
             <h1 className="text-green-500 text-4xl font-bold mb-2 text-center">Login</h1> {/* Green Login Text */}
             {/* Two Gray Boxes */}
             <div className="flex flex-col items-center space-y-4 w-full">
@@ -71,10 +69,10 @@ function Login() {
                   className="w-12 h-12 object-cover rounded-full mr-4" // Adjust image size and margin
                 />
                 <input
-                   type="text"
-                   placeholder="Username"
-                   value={username}
-                   onChange={(e) => setUsername(e.target.value)}
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl" // Updated className
                 />
               </div>
@@ -93,7 +91,7 @@ function Login() {
                 />
               </div>
             </div>
-            <div className="flex-1 flex justify-end"> 
+            <div className="flex-1 flex justify-end mt-6"> 
               <span className="text-sm text-green-500 cursor-pointer">
                 <Link to="/forgot">
                   <span className="text-green-500 cursor-pointer"> Forgot Username/Password?</span>
@@ -110,7 +108,7 @@ function Login() {
                 </button>
               </div>
             </div>
-            <div className="flex justify-center"> {/* Center the text */}
+            <div className="flex justify-center mt-6"> {/* Increased margin-top for better spacing */}
               <span className="text-sm text-gray-600">Don't have an account?
                 <Link to="/signup">
                   <span className="text-green-500 cursor-pointer"> Join Now</span>

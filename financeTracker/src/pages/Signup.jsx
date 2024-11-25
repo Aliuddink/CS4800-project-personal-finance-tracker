@@ -16,27 +16,26 @@ function Signup() {
     console.log("Confirm Password:", confirmPassword);
 
     if (password !== confirmPassword) {
-        alert("Passwords do not match!");
-        return;
+      alert("Passwords do not match!");
+      return;
     }
 
     try {
-        const response = await axios.post('http://localhost:5000/register', {
-            username,
-            email,
-            password,
-            confirm_password: confirmPassword
-        });
+      const response = await axios.post('http://localhost:5000/register', {
+        username,
+        email,
+        password,
+        confirm_password: confirmPassword
+      });
 
-        if (response.status === 201) {
-            navigate('/login');
-        }
+      if (response.status === 201) {
+        navigate('/login');
+      }
     } catch (error) {
-        console.error("Error registering user:", error);
-        alert(error.response?.data?.message || "Registration failed");
+      console.error("Error registering user:", error);
+      alert(error.response?.data?.message || "Registration failed");
     }
-};
-
+  };
 
   return (
     <>
@@ -47,7 +46,7 @@ function Signup() {
             alt="Logo"
             className="w-12 h-12 object-cover rounded-full"
           />
-          <span className="ml-4 text-lg font-semibold text-white">Finance Name</span>
+          <span className="ml-4 text-lg font-semibold text-white">BudgetBuddy</span>
         </div>
       </header>
       <div className="flex justify-center items-center h-screen w-screen mt-12">
@@ -64,10 +63,10 @@ function Signup() {
           </div>
 
           {/* White Box */}
-          <div className="bg-white w-full max-w-2xl p-6 rounded-lg shadow-lg z-10 relative"> {/* Adjusted padding */}
-            <h1 className="text-green-500 text-4xl font-bold mb-6 text-center">Create an Account</h1> {/* Increased margin-bottom */}
+          <div className="bg-white w-full max-w-2xl p-8 rounded-lg shadow-lg z-10 relative"> {/* Adjusted padding */}
+            <h1 className="text-green-500 text-4xl font-bold mb-8 text-center">Create an Account</h1> {/* Increased margin-bottom */}
             {/* Input Fields */}
-            <div className="flex flex-col items-center space-y-4 w-full">
+            <div className="flex flex-col items-center space-y-6 w-full"> {/* Adjusted spacing */}
               <div className="bg-gray-200 w-96 h-20 rounded-lg shadow-md flex items-center p-4">
                 <img
                   src="personIcon.png" // Replace with your image path
@@ -103,10 +102,10 @@ function Signup() {
                   className="w-12 h-12 object-cover rounded-full mr-4"
                 />
                 <input
-                   type="password"
-                   placeholder="Password"
-                   value={password}
-                   onChange={(e) => setPassword(e.target.value)}
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl"
                 />
               </div>
@@ -117,20 +116,17 @@ function Signup() {
                   className="w-12 h-12 object-cover rounded-full mr-4"
                 />
                 <input
-                   type="password"
-                   placeholder="Confirm Password"
-                   value={confirmPassword}
-                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="bg-gray-200 w-full h-full rounded-lg pl-1 outline-none text-black placeholder-black text-xl"
                 />
               </div>
             </div>
-            <div className="flex justify-center mt-4">
-              <div className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white text-lg font-semibold">Login</span>
-              </div>
-            </div>
-            <div className="flex justify-center mt-4"> 
+
+            {/* Sign Up Button */}
+            <div className="flex justify-center mt-7">
               <button
                 onClick={handleSubmit}
                 className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg"
@@ -139,10 +135,11 @@ function Signup() {
               </button>
             </div>
 
-            <div className="flex justify-center mt-2">
-              <span className="text-sm text-gray-600">Have an account?
+            {/* Sign-in Link */}
+            <div className="flex justify-center mt-6">
+              <span className="text-sm text-gray-600">
+                Have an account?
                 <Link to="/Login">
-                
                   <span className="text-green-500 cursor-pointer"> Sign in</span>
                 </Link>
               </span>
