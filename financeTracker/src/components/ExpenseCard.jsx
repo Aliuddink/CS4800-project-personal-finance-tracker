@@ -164,7 +164,7 @@ export default function ExpenseCard({ totalExpenses, updateTotalExpenses }) {
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 h-[300px] w-[800px] flex flex-col justify-between">
       <div>
         <label className="block text-lg font-semibold text-gray-700 mb-3">
-          This Month's Expenses:
+          Total Expenses:
         </label>
         {isEditingExpenses ? (
           <div className="flex items-center gap-4">
