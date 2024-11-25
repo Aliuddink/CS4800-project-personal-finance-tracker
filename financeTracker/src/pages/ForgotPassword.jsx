@@ -31,7 +31,7 @@ function ForgotPassword() {
             alt="Logo"
             className="w-12 h-12 object-cover rounded-full"
           />
-          <span className="ml-4 text-lg font-semibold text-white">Finance Name</span>
+          <span className="ml-4 text-lg font-semibold text-white">BudgetBuddy</span>
         </div>
       </header>
       <div className="flex justify-center items-center h-screen w-screen">
@@ -44,9 +44,9 @@ function ForgotPassword() {
             />
           </div>
 
-          <div className="bg-white w-full max-w-2xl h-96 p-12 rounded-lg shadow-lg z-10 relative">
-            <h1 className="text-green-500 text-4xl font-bold mb-2 text-center">Forgot Password/Username</h1>
-            <div className="flex flex-col items-center space-y-4 w-full">
+          <div className="bg-white w-full max-w-2xl h-85 p-12 rounded-lg shadow-lg z-10 relative">
+            <h1 className="text-green-500 text-4xl font-bold mb-8 text-center">Forgot Password/Username</h1>
+            <div className="flex flex-col items-center space-y-4 w-full mt-6">
               <div className="bg-gray-200 w-96 h-20 rounded-lg shadow-md flex items-center p-4">
                 <img
                   src="emailIcon.png"
@@ -63,7 +63,7 @@ function ForgotPassword() {
               </div>
             </div>
             
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-8">
               <div className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg">
                 <button
                   onClick={handleForgotPassword}
