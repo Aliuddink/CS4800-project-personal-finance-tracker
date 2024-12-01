@@ -29,6 +29,7 @@ function App() {
               <Route path = '/summary' element = {<Summary/>}/>
               <Route path = '/budgetbot' element = {<BudgetBot/>}/>
               <Route path= '/forgot' element={<ForgotPassword />} />
+              <Route path='/reset/:email/:uniqueKey' element={<ResetPassword />} />
               <Route path = '/scanner'element ={<ScannerVision/>} />
               <Route path = '/scanner2' element= {<ReadWords/>}/>
             </Routes>
