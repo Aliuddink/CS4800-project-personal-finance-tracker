@@ -92,18 +92,29 @@ def request_reset():
     except Exception as e:
         return jsonify({'message': f'Failed to send reset email: {str(e)}'}), 500
 
-@app.route('/reset-password', methods=['POST'])
-def reset_password():
+@app.route('/reset/<email>/<unique_key>', methods=['GET'])
+def check_reset_link(email, unique_key):
+    """
+    Check if the reset password link is valid.
+    """
+    if is_link_valid(email, unique_key):
+        return jsonify({'message': 'Reset link is valid'}), 200
+    else:
+        return jsonify({'message': 'Reset link is invalid or expired'}), 400
 
+# Password reset
+@app.route('/reset/<email>/<unique_key>', methods=['POST'])
+def reset_password(email, unique_key):
+    """
+    Reset the password using a valid link.
+    """
     data = request.json
-    email = data.get('email')
-    unique_key = data.get('unique_key')
     new_password = data.get('new_password')
 
-    if not (email and unique_key and new_password):
-        return jsonify({'message': 'Email, unique_key, and new_password are required'}), 400
+    if not new_password:
+        return jsonify({'message': 'New password is required'}), 400
 
-    # Validate the reset link
+    # Validate the reset link directly in the POST handler
     if not is_link_valid(email, unique_key):
         return jsonify({'message': 'Reset link is invalid or expired'}), 400
 
