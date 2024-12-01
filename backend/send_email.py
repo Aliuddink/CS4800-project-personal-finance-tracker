@@ -46,7 +46,7 @@ def create_reset_link(recipient_email):
     db.session.add(link_data)
     db.session.commit()
 
-    reset_link = f"{request.url_root}reset-password/{recipient_email}/{unique_key}"
+    reset_link = f"http://localhost:5173/reset/{recipient_email}/{unique_key}"
     return reset_link
 
 def is_link_valid(recipient_email, unique_key):
