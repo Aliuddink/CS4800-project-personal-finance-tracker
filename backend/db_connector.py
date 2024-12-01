@@ -59,7 +59,7 @@ def get_user_by_email(email):
 
 # Reset user password
 def reset_user_password(email, new_password):
-    query = "UPDATE users SET password = %s WHERE email = %s"
+    query = "UPDATE users SET password_hash = %s WHERE email = %s"
     execute_query(query, (new_password, email))
 
 # Helper function to execute a query
