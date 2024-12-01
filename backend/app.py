@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from flask_session import Session
 from db_connector import test_db_connection
-import db_connector
-import send_email
+import db_connector 
+from send_email import configure_mail, configure_link_storage_db, send_reset_email, is_link_valid
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -14,8 +14,9 @@ app.config["SESSION_TYPE"] = "filesystem"  # Store session data in the file syst
 app.config["SESSION_PERMANENT"] = False    # Session resets after the browser is closed
 Session(app)
 
-# Configure email service
-send_email.configure_mail(app)
+# Configure email service and link storage database
+configure_mail(app)
+configure_link_storage_db(app)
 
 def log_current_session():
     user_id = session.get('user_id')
@@ -71,31 +72,48 @@ def logout_user():
     session.clear()  # Clear the session
     return jsonify({"message": "Logout successful"}), 200
 
-
-
-
-# Request password reset
 @app.route('/request-reset', methods=['POST'])
 def request_reset():
+    
     data = request.json
-    email = data['email']
+    email = data.get('email')
 
+    if not email:
+        return jsonify({'message': 'Email is required'}), 400
+
+    # Check if the email exists in the system
     user = db_connector.get_user_by_email(email)
-    if user:
-        send_email.send_reset_email(app, email)
-        return jsonify({'message': 'Password reset email sent'}), 200
-    else:
-        return jsonify({'message': 'Email not found'}), 404
+    if not user:
+        return jsonify({'message': 'No user found with this email address'}), 404
 
-# Reset password
+    try:
+        send_reset_email(app, email)
+        return jsonify({'message': 'Password reset link sent to your email'}), 200
+    except Exception as e:
+        return jsonify({'message': f'Failed to send reset email: {str(e)}'}), 500
+
 @app.route('/reset-password', methods=['POST'])
 def reset_password():
-    data = request.json
-    email = data['email']
-    new_password = data['new_password']
 
-    db_connector.reset_user_password(email, new_password)
-    return jsonify({'message': 'Password updated successfully'}), 200
+    data = request.json
+    email = data.get('email')
+    unique_key = data.get('unique_key')
+    new_password = data.get('new_password')
+
+    if not (email and unique_key and new_password):
+        return jsonify({'message': 'Email, unique_key, and new_password are required'}), 400
+
+    # Validate the reset link
+    if not is_link_valid(email, unique_key):
+        return jsonify({'message': 'Reset link is invalid or expired'}), 400
+
+    # Reset the user's password
+    user = db_connector.get_user_by_email(email)
+    if user:
+        db_connector.reset_user_password(email, new_password)  # Ensure password hashing is applied
+        return jsonify({'message': 'Password has been updated successfully'}), 200
+
+    return jsonify({'message': 'Failed to update password. User not found.'}), 404
 
 # Fetch all expenses for a user
 @app.route('/api/expenses/<int:user_id>', methods=['GET'])
