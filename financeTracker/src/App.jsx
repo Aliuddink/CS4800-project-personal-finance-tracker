@@ -8,6 +8,7 @@ import PersonalInfo from './pages/PersonalInfo';
 import Summary from './pages/Summary';
 import BudgetBot from './pages/Budgetbot'
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import ScannerVision from './pages/ScannerVision';
 import ReadWords from './pages/ReadWords'
 import { ExpensesProvider } from "./context/ExpensesProvider";
