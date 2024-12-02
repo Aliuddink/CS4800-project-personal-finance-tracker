@@ -14,8 +14,6 @@ export default function Summary() {
 
   const updateTotalExpenses = (amount) => {
     const parsedAmount = parseFloat(amount);
-    console.log('----------')
-    console.log(parsedAmount)
     if (isNaN(parsedAmount)) {
       console.error("Invalid amount provided to updateTotalExpenses:", amount);
       return;

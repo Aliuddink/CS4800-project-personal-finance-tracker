@@ -102,16 +102,25 @@ function ReadWords() {
     
     
     return (
-        <Container>
+        <Container 
+            width="100vw"
+            h="100vh"
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            bg="gray.50"
+        >
             <Box height="100vh" mt="30vh">
                 <Box textAlign="center">
                 <Center>
                     <Image
-                    boxSize='45px'
-                    objectFit='cover'
-                    src='./outline.png'
-                    /></Center>
-                <Text fontSize="xl" fontWeight="medium">Easiest way to scan your receipts using Taggun API</Text>
+                        boxSize='45px'
+                        objectFit='cover'
+                        src='../../public/logoIcon.png'
+                    />
+                </Center>
+                <Text fontSize="xl" fontWeight="medium">Welcome to our scanner, where we will save the data from your receipt into our database.</Text>
                 <Text fontSize="md" color="gray.500">Upload an image of a store receipt below to see results</Text>
         
                 <VStack mt={16}>
@@ -128,7 +137,7 @@ function ReadWords() {
                     </Button>
         
                     }
-                    <Link fontSize="xs" colorScheme="primary" href="https://d7pdsiqo9rcig.cloudfront.net/wp-content/uploads/2019/04/receipt-2.jpg">Download a sample one</Link></VStack>
+                </VStack>
                 </Box>
         
                 {res && <Box>
