@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { AttachmentIcon } from '@chakra-ui/icons'
 import { ExpensesContext } from "../context/ExpensesProvider";
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
+import { Link as RouterLink } from "react-router-dom";
 
 function ReadWords() {
     const { updateTotalExpenses } = useContext(ExpensesContext);
@@ -111,6 +112,17 @@ function ReadWords() {
             alignItems="center"
             bg="gray.50"
         >
+            <Box position="absolute" top={4} left={4}>
+                <Link as={RouterLink} to="/home">
+                    <Image
+                        src="../../public/logoIcon.png" // Replace with the path to your icon
+                        alt="App Icon"
+                        boxSize="40px" // Adjust size as needed
+                    />
+                </Link>
+            </Box>
+
+
             <Box height="100vh" mt="30vh">
                 <Box textAlign="center">
                 <Center>
