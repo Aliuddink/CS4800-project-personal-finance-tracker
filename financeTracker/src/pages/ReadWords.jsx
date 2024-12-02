@@ -124,13 +124,13 @@ function ReadWords() {
                 <Text fontSize="md" color="gray.500">Upload an image of a store receipt below to see results</Text>
         
                 <VStack mt={16}>
-                    {file ? <Box><Text>{file.name}</Text></Box> : <VStack spacing={6}><Box>
+                    {file ? <Box><Text>{file.name}</Text></Box> : <VStack spacing={6} ml={90}><Box>
                     <label htmlFor="file-upload">
-                        <AttachmentIcon /> Click to select receipt
+                        <AttachmentIcon />
                     </label>
                     <input id="file-upload" type="file" onChange={handleUploadFile} />
                     </Box>
-                    </VStack>}
+                </VStack>}
         
                     {isUploading ? <LoadingOverlay thickness="2px" /> : <Button size="md" colorScheme="primary" onClick={submitPhoto}>
                         Upload photo
