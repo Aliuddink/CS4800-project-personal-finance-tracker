@@ -58,30 +58,31 @@ export function TableTag({ tagName }) {
     let color = '';
     const tag = tagName.toUpperCase();
     switch (tag) {
-        case 'FOOD':
-            color = 'bg-cyan-400';
-            break;
-        case 'RENT':
-            color = 'bg-amber-500';
-            break;
-        case 'UTILITIES':
-            color = 'bg-teal-400';
-            break;
-        case 'TRANSPORTATION':
-            color = 'bg-blue-400';
-            break;
-        case 'HEALTHCARE':
-            color = 'bg-red-400';
-            break;
-        case 'LEISURE':
-            color = 'bg-purple-400';
-            break;
-        case 'EARNINGS':
-            color = 'bg-green-600';
-            break;
-        default:
-            color = 'bg-gray-400';
-    }
+      case 'FOOD':
+          color = 'bg-cyan-400';
+          break;
+      case 'RENT':
+          color = 'bg-amber-500';
+          break;
+      case 'UTILITIES':
+          color = 'bg-teal-400';
+          break;
+      case 'TRANSPORTATION':
+          color = 'bg-blue-400';
+          break;
+      case 'HEALTHCARE':
+          color = 'bg-red-400';
+          break;
+      case 'LEISURE':
+          color = 'bg-purple-400';
+          break;
+      case 'EARNINGS':
+      case 'PAYCHECK':
+          color = 'bg-green-600';
+          break;
+      default:
+          color = 'bg-gray-400';
+  }  
 
     return (
       <div className={`text-center py-0.5 px-3 w-full object-contain flex-shrink-0 text-black ${color} truncate`}>
