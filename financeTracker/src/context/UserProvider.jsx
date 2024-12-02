@@ -8,7 +8,10 @@ export const UserProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // Update localStorage whenever the user state changes
+  const resetUser = () => {
+    setUser(null); 
+  };
+
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
@@ -18,7 +21,7 @@ export const UserProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, resetUser }}>
       {children}
     </UserContext.Provider>
   );
