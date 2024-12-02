@@ -1,15 +1,17 @@
 import React from "react";
-
+import {Link} from 'react-router-dom';
 export default function Sidebar() {
   return (
     <div className="flex flex-col w-44 fixed left-0 top-0 h-full items-center bg-black">
       {/* Icon */}
       <div className="pt-3">
-        <img
-          src="./logoIcon.png"
-          alt="Company Logo"
-          className="h-[70px] w-[70px] object-center"
-        />
+        <Link to="/home">
+          <img
+            src="./logoIcon.png"
+            alt="Company Logo"
+            className="h-[70px] w-[70px] object-center"
+          />
+        </Link>
       </div>
       {/* Navigation */}
       <nav className="pt-10">

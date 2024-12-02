@@ -36,11 +36,13 @@ function Login() {
     <>
       <header className="bg-black w-full fixed top-0 left-0 z-50">
         <div className="flex items-center p-4">
-          <img
-            src="logoIcon.png"
-            alt="Logo"
-            className="w-12 h-12 object-cover rounded-full"
-          />
+          <Link to = "/home">
+            <img
+              src="logoIcon.png"
+              alt="Logo"
+              className="w-12 h-12 object-cover rounded-full"
+            />
+          </Link>
           <span className="ml-4 text-lg font-semibold text-white">BudgetBuddy</span>
         </div>
       </header>
