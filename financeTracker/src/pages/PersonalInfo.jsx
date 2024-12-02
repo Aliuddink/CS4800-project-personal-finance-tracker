@@ -54,7 +54,7 @@ function PersonalInfo() {
                 alt="Setting Icon"
                 className="h-[30px] w-[30px] object-center"
               />
-              <a href="/personal-Info" className="text-white">Setting</a>
+              <a href="/personal-Info" className="text-white">Settings</a>
             </li>
           </ul>
         </nav>
@@ -85,7 +85,7 @@ function PersonalInfo() {
               <input
                 type="text"
                 placeholder="First Name"
-                className="block w-full bg-white text-lg p-3 border-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="block w-full bg-white text-black text-lg p-3 border-none focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -99,7 +99,7 @@ function PersonalInfo() {
               <input
                 type="text"
                 placeholder="Last Name"
-                className="block w-full bg-white text-lg p-3 border-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="block w-full bg-white text-black text-lg p-3 border-none focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
 
@@ -113,7 +113,7 @@ function PersonalInfo() {
               <input
                 type="email"
                 placeholder="email@gmail.com"
-                className="block w-full bg-white text-lg p-3 border-none focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="block w-full bg-white text-black text-lg p-3 border-none focus:outline-none focus:ring-2 focus:ring-green-500"
               />
             </div>
           </div>
