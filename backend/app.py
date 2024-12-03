@@ -489,6 +489,54 @@ def delete_expense(expense_id):
 
     return jsonify({"message": "Expense deleted successfully"}), 200
 
+# Update profile
+@app.route('/api/edit', methods=['POST'])
+def edit_profile():
+    log_current_session()  # Log session details for debugging
+
+    # Retrieve user_id from session
+    user_id = session.get('user_id')
+    if not user_id:
+        print("DEBUG: Attempt to edit profile but no user is logged in.")
+        return jsonify({"message": "User not logged in"}), 401
+
+    # Get JSON data from the request
+    data = request.json
+    username = data.get('username')
+    email = data.get('email')
+
+    # Validate input
+    if not username or not email:
+        print("DEBUG: Missing fields in edit profile request.")
+        return jsonify({"message": "Both username and email are required"}), 400
+
+    try:
+        # Update user details in the database
+        conn = db_connector.get_db_connection()
+        cursor = conn.cursor()
+        query = """
+        UPDATE users
+        SET username = %s, email = %s
+        WHERE id = %s
+        """
+        cursor.execute(query, (username, email, user_id))
+        conn.commit()
+
+        # Ensure the update was successful
+        if cursor.rowcount == 0:
+            print(f"DEBUG: No changes made for user ID {user_id}.")
+            return jsonify({"message": "No changes were made."}), 404
+
+        print(f"DEBUG: User ID {user_id} profile updated successfully.")
+        return jsonify({"message": "Profile updated successfully"}), 200
+
+    except Exception as e:
+        print(f"ERROR: Failed to update profile for user ID {user_id}: {str(e)}")
+        return jsonify({"message": "An error occurred while updating the profile"}), 500
+
+    finally:
+        conn.close()
+
 
 
 if __name__ == '__main__':
