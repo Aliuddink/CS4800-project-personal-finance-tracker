@@ -58,7 +58,7 @@ function ResetPassword() {
       <header className="bg-black w-full fixed top-0 left-0 z-50">
         <div className="flex items-center p-4">
           <img
-            src="logoIcon.png"
+            src="/logoIcon.png"
             alt="Logo"
             className="w-12 h-12 object-cover rounded-full"
           />
@@ -70,11 +70,11 @@ function ResetPassword() {
         <div className="relative">
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-56 h-56 rounded-full z-0 flex items-center justify-center">
             <img
-              src="logoIcon.png"
+              src="/logoIcon.png"
               alt="Circle Image"
               className="w-32 h-32 object-cover rounded-full -mt-24"
             />
-          </div>
+          </div> 
 
           <div className="bg-white w-full max-w-2xl h-85 p-12 rounded-lg shadow-lg z-10 relative">
             <h1 className="text-green-500 text-4xl font-bold mb-8 text-center">
@@ -92,7 +92,7 @@ function ResetPassword() {
               <div className="flex flex-col items-center space-y-4 w-full mt-6">
                 <div className="bg-gray-200 w-96 h-20 rounded-lg shadow-md flex items-center p-4">
                   <img
-                    src="passwordIcon.png"
+                    src="/passwordIcon.png"
                     alt="Password Icon"
                     className="w-12 h-12 object-cover rounded-full mr-4"
                   />
@@ -112,7 +112,7 @@ function ResetPassword() {
             )}
 
             <div className="flex justify-center mt-8">
-              <div className="bg-green-500 w-48 h-12 rounded-full flex items-center justify-center shadow-lg">
+              <div className=" w-48 h-12 rounded-full flex items-center justify-center shadow-lg">
                 <button
                   onClick={handleResetPassword}
                   className="text-white text-lg font-semibold"
