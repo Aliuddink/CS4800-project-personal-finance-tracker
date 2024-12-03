@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate  } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from "../context/UserProvider";
 
 const Home = () => {
@@ -27,7 +27,7 @@ const Home = () => {
             <li
               className="px-4 bg-green-500 text-white rounded-full shadow-md hover:bg-green-700 transition duration-300 cursor-pointer"
               title="Go to Profile"
-              onClick={() => navigate("/personal-info")} 
+              onClick={() => navigate("/personal-info")}
             >
               {user}
             </li> // Display username with rounded border and hover effect
@@ -42,32 +42,24 @@ const Home = () => {
       </nav>
 
       {/* Header */}
-      <header className="flex flex-col items-start justify-center text-left py-20 px-6 bg-black text-white">
+      <header className="flex flex-col items-start justify-center text-left py-20 px-6 bg-black text-white bg-[url('background1.png')] bg-cover bg-center">
         <div className="flex items-center space-x-4">
-          {/* Heading */}
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Manage Your Finance,<br />
             Expand Your Savings
           </h1>
-
-          {/* Image next to heading */}
-          <img src="/increaseIcon.png" alt="Finance Image" className="w-16 h-16 md:w-24 md:h-24 object-contain" />
+          <img src="/increaseIcon1.png" alt="Finance Image" className="w-16 h-16 md:w-24 md:h-24 object-contain" />
         </div>
-
-        {/* Paragraph */}
         <p className="text-xl md:text-m">
           Track your savings and expenses effortlessly with our finance tool.<br />
           Visualize your financial health through interactive charts, helping you stay on top of your budget.
         </p>
-
-        {/* Register Now Button */}
         <Link to="/Signup">
           <button className="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-300">
             Register Now →
           </button>
         </Link>
-
-        <img src="/pigMoneyIcon.png" alt="Finance Image" className="mt-2 ml-auto w-32 h-32 md:w-44 md:h-44 object-contain rounded-lg shadow-md" />
+        <img src="/pigMoneyIcon1.png" alt="Finance Image" className="mt-2 ml-auto w-32 h-32 md:w-44 md:h-44 object-contain rounded-lg shadow-md" />
       </header>
 
       {/* Section Cards */}
