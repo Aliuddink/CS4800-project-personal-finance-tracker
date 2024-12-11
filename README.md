@@ -1,6 +1,18 @@
 # BudgetBuddy
 Finace Tracker helps users manage their finance and expand thieir savings
 
+## Authors:
+  Matthew Yu  
+  Toby Thap  
+  Michelle Dang  
+  Loc Huynh 
+  Khoi Tran  
+  Youssef Mikhail  
+  Aisling Gonzalez  
+  Edwin Ly   
+  Ali Khaja  
+  George Fransis  
+  
 ## Project Build & Deployment Instructions
 Prerequisites: 
   - Node.js (v16 or higher)
