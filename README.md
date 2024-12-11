@@ -1,5 +1,5 @@
 # BudgetBuddy
-Finace Tracker helps users manage their finance and expand thieir savings
+Finance Tracker helps users manage their finances and expand their savings in a user-friendly way.
 
 ## Authors:
   Matthew Yu  
@@ -17,8 +17,6 @@ Finace Tracker helps users manage their finance and expand thieir savings
 Prerequisites: 
   - Node.js (v16 or higher)
   - Python (v3.9 or higher)
-  - npm
-  - web browser
 
 ### Deployment Instructions
 
