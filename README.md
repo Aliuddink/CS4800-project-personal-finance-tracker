@@ -5,7 +5,7 @@ Finance Tracker helps users manage their finances and expand their savings in a 
   Matthew Yu  
   Toby Thap  
   Michelle Dang  
-  Loc Huynh 
+  Loc Huynh   
   Khoi Tran  
   Youssef Mikhail  
   Aisling Gonzalez  
