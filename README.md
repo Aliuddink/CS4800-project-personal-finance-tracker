@@ -1,14 +1,14 @@
-#BudgetBuddy
+# BudgetBuddy
 Finace Tracker helps users manage their finance and expand thieir savings
 
-#Project Build & Deployment Instructions
+## Project Build & Deployment Instructions
 Prerequisites: 
   - Node.js (v16 or higher)
   - Python (v3.9 or higher)
   - npm
   - web browser
 
-#Deployment Instructions
+### Deployment Instructions
 
 git clone <https://github.com/CS4800Group/CS4800-project-personal-finance-tracker.git>
 
@@ -22,7 +22,7 @@ cd financeTracker
 npm install
 npm run dev
 
-#Project Release Notes
+## Project Release Notes
 Features:
   Expense Logging: Users can manually log and categorize their expenses.
   Scanner: Users can upload their receipts and the OCR API key will scan it for data and add it to the entries.
